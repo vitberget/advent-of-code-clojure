@@ -1,0 +1,5 @@
+{:deps {
+        ysera/ysera {:mvn/version "2.0.2"}
+        }
+
+ }
