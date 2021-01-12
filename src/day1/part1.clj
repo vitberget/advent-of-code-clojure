@@ -1,4 +1,4 @@
-(ns day1
+(ns day1.part1
   (:require [ysera.test :refer [is is= is-not]]
 
             ))
