@@ -82,9 +82,9 @@
   [string]
   (let [row (get-row string)
         column (get-column string)]
-    {:row row
+    {:row    row
      :column column
-     :seat (+ column (* row 8))}))
+     :seat   (+ column (* row 8))}))
 
 
 (defn day5part1
@@ -93,9 +93,29 @@
        (map string->boarding-card)
        (map :seat)
        (reduce max)
-  ))
+       ))
+
+(defn day5part2
+  [string]
+  (let [seats (->> (str/split string #"\n")
+                   (map string->boarding-card)
+                   (map :seat)
+                   (sort))]
+    (loop [seat (first seats)
+           seats (rest seats)]
+      (let [next-seat (first seats)]
+        (println seat next-seat)
+        (if (= (+ seat 2) next-seat)
+          (inc seat)
+          (recur next-seat (rest seats)))))))
 
 (comment
   (day5part1 "BFFFBBFRRR\nFFFBBBFRRR\nBBFFBBFRLL")
+
+
+
+
+
+
 
   )
