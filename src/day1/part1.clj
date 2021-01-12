@@ -1,7 +1,5 @@
 (ns day1.part1
-  (:require [ysera.test :refer [is is= is-not]]
-
-            ))
+  (:require [ysera.test :refer [is is= is-not]]))
 
 (defn number-and-list-adding-up-to-2020
   {:test (fn []
