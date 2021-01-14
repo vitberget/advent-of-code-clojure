@@ -40,17 +40,3 @@
          (sort (fn[a b] (< (second a) (second b))))
          (first)
          (reduce *))))
-
-
-
-
-
-
-
-
-
-
-(comment
-
-              )
-  )
