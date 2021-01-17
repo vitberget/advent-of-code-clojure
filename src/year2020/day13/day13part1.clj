@@ -1,4 +1,4 @@
-(ns day13.day13part1
+(ns year2020.day13.day13part1
   (:require [ysera.test :refer [is is= is-not deftest]]
             [clojure.string :as str]))
 

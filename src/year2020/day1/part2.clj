@@ -1,4 +1,4 @@
-(ns day1.part2)
+(ns year2020.day1.part2)
 ;--- Part Two ---
 ;
 ;The Elves in accounting are thankful for your help; one of them even offers
