@@ -26,9 +26,10 @@
            (count))})
 
 (def surrounding-seats
-  (list [-1 -1] [0 -1] [1 -1]
-        [-1 0] [1 0]
-        [-1 1] [0 1] [1 1]))
+  (for [x (range -1 2)
+        y (range -1 2)
+        :when (not= x y 0)]
+    [x y]))
 
 (defn count-seats
   [state [sx sy]]
