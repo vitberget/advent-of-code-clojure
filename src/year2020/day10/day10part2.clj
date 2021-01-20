@@ -1,7 +1,6 @@
 (ns year2020.day10.day10part2
   (:require [ysera.test :refer [is is= is-not]]
-            [clojure.string :as str]
-            ))
+            [clojure.string :as str]))
 
 (defn conj-max-plus-3
   {:test (fn []
