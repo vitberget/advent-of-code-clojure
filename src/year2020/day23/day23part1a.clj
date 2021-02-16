@@ -1,5 +1,6 @@
-(ns year2020.day23.day23part1
+(ns year2020.day23.day23part1a
   (:require [ysera.test :refer [is is= is-not]]
+            [ysera.collections :refer [index-of]]
             [clojure.string :as str]))
 
 (defn string->cups
@@ -119,5 +120,7 @@
 (comment
   (def puzzle "784235916")
   (time (day23part1 puzzle 100))
+  ;"Elapsed time: 3.539361 msecs"
+  ;=> "53248976"
 
   )
