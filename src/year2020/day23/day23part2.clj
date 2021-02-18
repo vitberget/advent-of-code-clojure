@@ -48,52 +48,47 @@
 (defn move-cups
   {:test (fn []
            (let [; Moves från exempel del 1
-                 move1 (numbers->state (list 3 8 9 1 2 5 4 6 7))
-                 move2 (numbers->state (list 2 8 9 1 5 4 6 7 3))
-                 move3 (numbers->state (list 5 4 6 7 8 9 1 3 2))
-                 move4 (numbers->state (list 8 9 1 3 4 6 7 2 5))
-                 move5 (numbers->state (list 4 6 7 9 1 3 2 5 8))
-                 move6 (numbers->state (list 1 3 6 7 9 2 5 8 4))
-                 move7 (numbers->state (list 9 3 6 7 2 5 8 4 1))
-                 move8 (numbers->state (list 2 5 8 3 6 7 4 1 9))
-                 move9 (numbers->state (list 6 7 4 1 5 8 3 9 2))
-                 move10 (numbers->state (list 5 7 4 1 8 3 9 2 6))
+                 move-1 (numbers->state (list 3 8 9 1 2 5 4 6 7))
+                 move-2 (numbers->state (list 2 8 9 1 5 4 6 7 3))
+                 move-3 (numbers->state (list 5 4 6 7 8 9 1 3 2))
+                 move-4 (numbers->state (list 8 9 1 3 4 6 7 2 5))
+                 move-5 (numbers->state (list 4 6 7 9 1 3 2 5 8))
+                 move-6 (numbers->state (list 1 3 6 7 9 2 5 8 4))
+                 move-7 (numbers->state (list 9 3 6 7 2 5 8 4 1))
+                 move-8 (numbers->state (list 2 5 8 3 6 7 4 1 9))
+                 move-9 (numbers->state (list 6 7 4 1 5 8 3 9 2))
+                 move-10 (numbers->state (list 5 7 4 1 8 3 9 2 6))
                  final (numbers->state (list 8 3 7 4 1 9 2 6 5))]
-             (is= (move-cups move1) move2)
-             (is= (move-cups move2) move3)
-             (is= (move-cups move3) move4)
-             (is= (move-cups move4) move5)
-             (is= (move-cups move5) move6)
-             (is= (move-cups move6) move7)
-             (is= (move-cups move7) move8)
-             (is= (move-cups move8) move9)
-             (is= (move-cups move9) move10)
-             (is= (move-cups move10) final)))}
+             (is= (move-cups move-1) move-2)
+             (is= (move-cups move-2) move-3)
+             (is= (move-cups move-3) move-4)
+             (is= (move-cups move-4) move-5)
+             (is= (move-cups move-5) move-6)
+             (is= (move-cups move-6) move-7)
+             (is= (move-cups move-7) move-8)
+             (is= (move-cups move-8) move-9)
+             (is= (move-cups move-9) move-10)
+             (is= (move-cups move-10) final)))}
   [{ring :ring current :current}]
   (let [n1 (ring current)
         n2 (ring n1)
         n3 (ring n2)
         n4 (ring n3)
-        destination-cup (destination-cup current #{n1 n2 n3} (count ring))
-        ring (merge ring
-                    {current         n4
-                     destination-cup n1
-                     n2              n3
-                     n3              (ring destination-cup)
-                     })]
-    {:ring    ring
-     :current (ring current)}))
+        destination-cup (destination-cup current #{n1 n2 n3} (count ring))]
+    {:ring    (assoc ring current n4
+                          destination-cup n1
+                          n3 (ring destination-cup))
+     :current n4}))
 
 (defn move-cups-n-times
   {:test (fn []
            (is= (move-cups-n-times (numbers->state '(3 8 9 1 2 5 4 6 7)) 10)
                 (numbers->state '(8 3 7 4 1 9 2 6 5))))}
   [cups times]
-  (loop [i 0
-         cups cups]
-    (if (= i times)
-      cups
-      (recur (inc i) (move-cups cups)))))
+  (reduce
+    (fn [cups _] (move-cups cups))
+    cups
+    (range 0 times)))
 
 (defn take-two-after-one
   {:test (fn []
@@ -109,14 +104,13 @@
            (is= (day23part2 "389125467" 10000000)
                 (* 934001 159792)))}
   [string times]
-  (->> (-> string
-           (string->numbers)
-           (concat (range 10 1000001))
-           (numbers->state)
-           (move-cups-n-times times)
-           (take-two-after-one)
-           )
-       (reduce *)))
+  (as-> string $
+        (string->numbers $)
+        (concat $ (range 10 1000001))
+        (numbers->state $)
+        (move-cups-n-times $ times)
+        (take-two-after-one $)
+        (reduce * $)))
 
 (comment
   (def puzzle "784235916")

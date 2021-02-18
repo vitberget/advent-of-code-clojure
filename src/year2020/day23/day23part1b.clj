@@ -80,7 +80,6 @@
         ring (merge ring
                     {current         n4
                      destination-cup n1
-                     n2              n3
                      n3              (ring destination-cup)
                      })]
     {:ring    ring
