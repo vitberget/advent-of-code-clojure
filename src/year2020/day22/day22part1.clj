@@ -48,8 +48,10 @@
 
       :else
       (if (> card1 card2)
-        (recur (concat deck1 (list card1 card2)) deck2)
-        (recur (concat deck2 (list card2 card1)) deck1)))))
+        (recur (concat deck1 (list card1 card2))
+               deck2)
+        (recur deck1
+               (concat deck2 (list card2 card1)))))))
 
 (defn day22part1
   {:test (fn []
@@ -65,5 +67,7 @@
 (comment
   (def puzzle-input "Player 1:\n47\n19\n22\n31\n24\n6\n10\n5\n1\n48\n46\n27\n8\n45\n16\n28\n33\n41\n42\n36\n50\n39\n30\n11\n17\n\nPlayer 2:\n4\n18\n21\n37\n34\n15\n35\n38\n20\n23\n9\n25\n32\n13\n26\n2\n12\n44\n14\n49\n3\n40\n7\n43\n29"
     )
-  (day22part1 puzzle-input)
+  (time (day22part1 puzzle-input))
+  ;"Elapsed time: 6.164513 msecs"
+  ;=> 33434
   )
