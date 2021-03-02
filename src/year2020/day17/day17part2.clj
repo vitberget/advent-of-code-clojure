@@ -67,31 +67,21 @@
                               (println (state-level->string state z w))
                               (println)))))))))
 
-
-
 (defn surrounding-positions
   {:test (fn []
            (is= (count (surrounding-positions {:x 10 :y 10 :z 10 :w 10}))
                 80))}
   [position]
-  (->> (range -1 2)
-       (map (fn [dw]
-              (->> (range -1 2)
-                   (map (fn [dz]
-                          (->> (range -1 2)
-                               (map (fn [dy]
-                                      (->> (range -1 2)
-                                           (filter (fn [dx] (or (not= dx 0)
-                                                                (not= dy 0)
-                                                                (not= dz 0)
-                                                                (not= dw 0))))
-                                           (map (fn [dx]
-                                                  {:x (+ (:x position) dx)
-                                                   :y (+ (:y position) dy)
-                                                   :z (+ (:z position) dz)
-                                                   :w (+ (:w position) dw)})))))))))))
-       (flatten)
-       (into #{})))
+  (into #{}
+        (for [dx (range -1 2)
+              dy (range -1 2)
+              dz (range -1 2)
+              dw (range -1 2)
+              :when (not (= [dx dy dz dw] [0 0 0 0]))]
+          {:x (+ (:x position) dx)
+           :y (+ (:y position) dy)
+           :z (+ (:z position) dz)
+           :w (+ (:w position) dw)})))
 
 (defn conway-rule
   ;- If a cube is active and exactly 2 or 3 of its neighbors are also active,
@@ -99,16 +89,12 @@
   ;- If a cube is inactive but exactly 3 of its neighbors are active,
   ; the cube becomes active. Otherwise, the cube remains inactive.
   [position state]
-  (let [surrounding (->> position
-                         (surrounding-positions))
-
-        surrounding-living (->> surrounding
+  (let [surrounding-living (->> position
+                                (surrounding-positions)
                                 (set/intersection state)
-                                (count))
-        active (contains? state position)]
-
+                                (count))]
     (when (or (= surrounding-living 3)
-              (and active (= surrounding-living 2)))
+              (and (= surrounding-living 2) (contains? state position)))
       position)))
 
 (defn conway-step

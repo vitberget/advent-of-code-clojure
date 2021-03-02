@@ -61,25 +61,19 @@
                  (println (state-level->string state z))
                  (println))))))
 
-
-
 (defn surrounding-positions
   {:test (fn []
            (is= (count (surrounding-positions {:x 10 :y 10 :z 10}))
                 (- (* 9 3) 1)))}
   [position]
-  (->> (range -1 2)
-       (map (fn [dz]
-              (->> (range -1 2)
-                   (map (fn [dy]
-                          (->> (range -1 2)
-                               (filter (fn [dx] (or (not= dx 0) (not= dy 0) (not= dz 0))))
-                               (map (fn [dx]
-                                      {:x (+ (:x position) dx)
-                                       :y (+ (:y position) dy)
-                                       :z (+ (:z position) dz)}))))))))
-       (flatten)
-       (into #{})))
+  (into #{}
+        (for [dx (range -1 2)
+              dy (range -1 2)
+              dz (range -1 2)
+              :when (not (= [dx dy dz] [0 0 0]))]
+          {:x (+ (:x position) dx)
+           :y (+ (:y position) dy)
+           :z (+ (:z position) dz)})))
 
 (defn conway-rule
   ;- If a cube is active and exactly 2 or 3 of its neighbors are also active,
@@ -93,16 +87,12 @@
              ;(print-state state)
              (is= (conway-rule {:x 0 :y 1 :z -1} state) {:x 0 :y 1 :z -1})))}
   [position state]
-  (let [surrounding (->> position
-                         (surrounding-positions))
-
-        surrounding-living (->> surrounding
+  (let [surrounding-living (->> position
+                                (surrounding-positions)
                                 (set/intersection state)
-                                (count))
-        active (contains? state position)]
-
+                                (count))]
     (when (or (= surrounding-living 3)
-              (and active (= surrounding-living 2)))
+              (and (= surrounding-living 2) (contains? state position)))
       position)))
 
 (defn conway-step
@@ -123,7 +113,7 @@
     ;(print-state state)
     (if (= i times)
       state
-        (recur (conway-step state) (inc i)))))
+      (recur (conway-step state) (inc i)))))
 
 (defn day17part1
   [string]
