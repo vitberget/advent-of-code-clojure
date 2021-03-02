@@ -1,4 +1,4 @@
-(ns year2020.day17.day17part1
+(ns year2020.day17.day17part2
   (:require [ysera.test :refer [is is= is-not deftest]]
             [clojure.string :as str]
             [clojure.set :as set]))
@@ -8,9 +8,9 @@
            (is= (string->state (str ".#.\n"
                                     "..#\n"
                                     "###"))
-                #{{:x 1 :y 0 :z 0}
-                  {:x 2 :y 1 :z 0}
-                  {:x 0 :y 2 :z 0} {:x 1 :y 2 :z 0} {:x 2 :y 2 :z 0}}))}
+                #{{:x 1 :y 0 :z 0 :w 0}
+                  {:x 2 :y 1 :z 0 :w 0}
+                  {:x 0 :y 2 :z 0 :w 0} {:x 1 :y 2 :z 0 :w 0} {:x 2 :y 2 :z 0 :w 0}}))}
   [string]
 
   (->> string
@@ -18,22 +18,22 @@
        (map-indexed (fn [y row] (->> row
                                      (map-indexed (fn [x char]
                                                     (when (= char \#)
-                                                      {:x x :y y :z 0}))))))
+                                                      {:x x :y y :z 0 :w 0}))))))
        (flatten)
        (filter identity)
        (into #{})))
 
 (defn state-level->string
   {:test (fn []
-           (is= (state-level->string #{{:x 1 :y 0 :z 0}
-                                       {:x 2 :y 1 :z 0}
-                                       {:x 0 :y 2 :z 0} {:x 1 :y 2 :z 0} {:x 2 :y 2 :z 0}}
-                                     0)
+           (is= (state-level->string #{{:x 1 :y 0 :z 0 :w 0}
+                                       {:x 2 :y 1 :z 0 :w 0}
+                                       {:x 0 :y 2 :z 0 :w 0} {:x 1 :y 2 :z 0 :w 0} {:x 2 :y 2 :z 0 :w 0}}
+                                     0 0)
                 (str ".#.\n"
                      "..#\n"
                      "###"))
            )}
-  [state z]
+  [state z w]
   (let [min-x (->> state (map :x) (reduce min))
         max-x (->> state (map :x) (reduce max))
         min-y (->> state (map :y) (reduce min))
@@ -44,7 +44,7 @@
     (->> y-range
          (map (fn [y] (->> x-range
                            (map (fn [x]
-                                  (if (contains? state {:x x :y y :z z})
+                                  (if (contains? state {:x x :y y :z z :w w})
                                     \#
                                     \.)))
                            (str/join))))
@@ -54,30 +54,42 @@
   [state]
   (let [min-z (->> state (map :z) (reduce min))
         max-z (->> state (map :z) (reduce max))
-        z-range (range min-z (inc max-z))]
-    (->> z-range
-         (run! (fn [z]
-                 (println "z =" z)
-                 (println (state-level->string state z))
-                 (println))))))
+        z-range (range min-z (inc max-z))
+
+        min-w (->> state (map :z) (reduce min))
+        max-w (->> state (map :z) (reduce max))
+        w-range (range min-w (inc max-w))]
+    (->> w-range
+         (run! (fn [w]
+                 (->> z-range
+                      (run! (fn [z]
+                              (println "z =" z " w = " w)
+                              (println (state-level->string state z w))
+                              (println)))))))))
 
 
 
 (defn surrounding-positions
   {:test (fn []
-           (is= (count (surrounding-positions {:x 10 :y 10 :z 10}))
-                (- (* 9 3) 1)))}
+           (is= (count (surrounding-positions {:x 10 :y 10 :z 10 :w 10}))
+                80))}
   [position]
   (->> (range -1 2)
-       (map (fn [dz]
+       (map (fn [dw]
               (->> (range -1 2)
-                   (map (fn [dy]
+                   (map (fn [dz]
                           (->> (range -1 2)
-                               (filter (fn [dx] (or (not= dx 0) (not= dy 0) (not= dz 0))))
-                               (map (fn [dx]
-                                      {:x (+ (:x position) dx)
-                                       :y (+ (:y position) dy)
-                                       :z (+ (:z position) dz)}))))))))
+                               (map (fn [dy]
+                                      (->> (range -1 2)
+                                           (filter (fn [dx] (or (not= dx 0)
+                                                                (not= dy 0)
+                                                                (not= dz 0)
+                                                                (not= dw 0))))
+                                           (map (fn [dx]
+                                                  {:x (+ (:x position) dx)
+                                                   :y (+ (:y position) dy)
+                                                   :z (+ (:z position) dz)
+                                                   :w (+ (:w position) dw)})))))))))))
        (flatten)
        (into #{})))
 
@@ -86,12 +98,6 @@
   ; the cube remains active. Otherwise, the cube becomes inactive.
   ;- If a cube is inactive but exactly 3 of its neighbors are active,
   ; the cube becomes active. Otherwise, the cube remains inactive.
-  {:test (fn []
-           (let [state #{{:x 1 :y 0 :z 0}
-                         {:x 2 :y 1 :z 0}
-                         {:x 0 :y 2 :z 0} {:x 1 :y 2 :z 0} {:x 2 :y 2 :z 0}}]
-             ;(print-state state)
-             (is= (conway-rule {:x 0 :y 1 :z -1} state) {:x 0 :y 1 :z -1})))}
   [position state]
   (let [surrounding (->> position
                          (surrounding-positions))
@@ -123,23 +129,23 @@
     ;(print-state state)
     (if (= i times)
       state
-        (recur (conway-step state) (inc i)))))
+      (recur (conway-step state) (inc i)))))
 
-(defn day17part1
-  [string]
+(defn day17part2
+  [string num]
   (-> string
       (string->state)
-      (conway-do 6)
+      (conway-do num)
       (count)))
 
 (comment
-  (day17part1 (str ".#.\n"
+  (day17part2 (str ".#.\n"
                    "..#\n"
-                   "###"))
+                   "###") 6)
 
   (let [puzzle "####...#\n......#.\n#..#.##.\n.#...#.#\n..###.#.\n##.###..\n.#...###\n.##....#"]
-    (time (day17part1 puzzle)))
-  ;"Elapsed time: 476.285226 msecs" (with print-state)
-  ;"Elapsed time: 408.745401 msecs" (without print-state)
-  ;=> 286
+    (time (day17part2 puzzle 6)))
+  ;"Elapsed time: 10769.743003 msecs"
+  ;=> 960
+
   )
