@@ -26,8 +26,6 @@
                     (reduce merge))
      :idx      (count numbers)}))
 
-
-
 ;0,3,6,0,3,3,0,4,0
 (defn last-spoken
   {:test (fn []
@@ -66,6 +64,6 @@
       (recur (last-spoken state)))))
 
 (comment
-  (nth-spoken "14,8,16,0,1,17" 2020)                        ; 240
-  (nth-spoken "14,8,16,0,1,17" 30000000)                    ; 505
+  (time (nth-spoken "14,8,16,0,1,17" 2020))                 ; 240
+  (time (nth-spoken "14,8,16,0,1,17" 30000000))             ; 505
   )
