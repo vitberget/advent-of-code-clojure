@@ -59,13 +59,11 @@
         min-w (->> state (map :z) (reduce min))
         max-w (->> state (map :z) (reduce max))
         w-range (range min-w (inc max-w))]
-    (->> w-range
-         (run! (fn [w]
-                 (->> z-range
-                      (run! (fn [z]
-                              (println "z =" z " w = " w)
-                              (println (state-level->string state z w))
-                              (println)))))))))
+    (doseq [w w-range
+            z z-range]
+      (println "w=" w "z=" z)
+      (println (state-level->string state z w))
+      (println))))
 
 (defn surrounding-positions
   {:test (fn []
@@ -111,7 +109,7 @@
   [state times]
   (loop [state state
          i 0]
-    ;(println "con do" i)
+    ;(println "Conway game" i)
     ;(print-state state)
     (if (= i times)
       state

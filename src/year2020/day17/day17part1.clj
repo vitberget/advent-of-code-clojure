@@ -55,11 +55,10 @@
   (let [min-z (->> state (map :z) (reduce min))
         max-z (->> state (map :z) (reduce max))
         z-range (range min-z (inc max-z))]
-    (->> z-range
-         (run! (fn [z]
-                 (println "z =" z)
-                 (println (state-level->string state z))
-                 (println))))))
+    (doseq [z z-range]
+      (println "z=" z)
+      (println (state-level->string state z))
+      (println))))
 
 (defn surrounding-positions
   {:test (fn []
@@ -84,7 +83,6 @@
            (let [state #{{:x 1 :y 0 :z 0}
                          {:x 2 :y 1 :z 0}
                          {:x 0 :y 2 :z 0} {:x 1 :y 2 :z 0} {:x 2 :y 2 :z 0}}]
-             ;(print-state state)
              (is= (conway-rule {:x 0 :y 1 :z -1} state) {:x 0 :y 1 :z -1})))}
   [position state]
   (let [surrounding-living (->> position
@@ -109,7 +107,7 @@
   [state times]
   (loop [state state
          i 0]
-    ;(println "con do" i)
+    ;(println "Conway game" i)
     ;(print-state state)
     (if (= i times)
       state
