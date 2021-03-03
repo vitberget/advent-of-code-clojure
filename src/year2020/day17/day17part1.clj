@@ -43,9 +43,7 @@
         y-range (range min-y (inc max-y))]
     (->> (for [y y-range]
            (->> (for [x x-range]
-                  (if (contains? state {:x x :y y :z z})
-                    \#
-                    \.))
+                  (if (contains? state {:x x :y y :z z}) \# \.))
                 (str/join)))
          (str/join "\n"))))
 
