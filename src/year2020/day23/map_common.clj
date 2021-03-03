@@ -68,15 +68,15 @@
              (is= (move-cups move-9) move-10)
              (is= (move-cups move-10) final)))}
   [{ring :ring current :current}]
-  (let [n1 (ring current)
-        n2 (ring n1)
-        n3 (ring n2)
-        n4 (ring n3)
-        destination-cup (destination-cup current #{n1 n2 n3} (count ring))]
-    {:ring    (assoc ring current n4
-                          destination-cup n1
-                          n3 (ring destination-cup))
-     :current n4}))
+  (let [cw1 (ring current)
+        cw2 (ring cw1)
+        cw3 (ring cw2)
+        cw-of-three (ring cw3)
+        destination-cup (destination-cup current #{cw1 cw2 cw3} (count ring))]
+    {:ring    (assoc ring current cw-of-three
+                          destination-cup cw1
+                          cw3 (ring destination-cup))
+     :current cw-of-three}))
 
 (defn move-cups-n-times
   {:test (fn []

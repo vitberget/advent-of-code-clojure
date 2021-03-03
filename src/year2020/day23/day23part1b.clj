@@ -28,8 +28,7 @@
            (string->numbers)
            (numbers->state)
            (move-cups-n-times times)
-           (that-remove-one-thing)
-           )
+           (that-remove-one-thing))
        (reduce str)))
 
 (comment
