@@ -41,13 +41,12 @@
 
         x-range (range min-x (inc max-x))
         y-range (range min-y (inc max-y))]
-    (->> y-range
-         (map (fn [y] (->> x-range
-                           (map (fn [x]
-                                  (if (contains? state {:x x :y y :z z})
-                                    \#
-                                    \.)))
-                           (str/join))))
+    (->> (for [y y-range]
+           (->> (for [x x-range]
+                  (if (contains? state {:x x :y y :z z})
+                    \#
+                    \.))
+                (str/join)))
          (str/join "\n"))))
 
 (defn print-state
@@ -107,8 +106,8 @@
   [state times]
   (loop [state state
          i 0]
-    ;(println "Conway game" i)
-    ;(print-state state)
+    (println "Conway game" i)
+    (print-state state)
     (if (= i times)
       state
       (recur (conway-step state) (inc i)))))
