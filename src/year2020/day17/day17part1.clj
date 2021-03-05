@@ -23,6 +23,12 @@
        (filter identity)
        (into #{})))
 
+(defn range-from-state
+  [state key]
+  (let [vals (map key state)]
+    (range (reduce min vals)
+           (inc (reduce max vals)))))
+
 (defn state-level->string
   {:test (fn []
            (is= (state-level->string #{{:x 1 :y 0 :z 0}
@@ -34,28 +40,18 @@
                      "###"))
            )}
   [state z]
-  (let [min-x (->> state (map :x) (reduce min))
-        max-x (->> state (map :x) (reduce max))
-        min-y (->> state (map :y) (reduce min))
-        max-y (->> state (map :y) (reduce max))
-
-        x-range (range min-x (inc max-x))
-        y-range (range min-y (inc max-y))]
-    (->> (for [y y-range]
-           (->> (for [x x-range]
-                  (if (contains? state {:x x :y y :z z}) \# \.))
-                (str/join)))
-         (str/join "\n"))))
+  (->> (for [y (range-from-state state :y)]
+         (->> (for [x (range-from-state state :x)]
+                (if (contains? state {:x x :y y :z z}) \# \.))
+              (str/join)))
+       (str/join "\n")))
 
 (defn print-state
   [state]
-  (let [min-z (->> state (map :z) (reduce min))
-        max-z (->> state (map :z) (reduce max))
-        z-range (range min-z (inc max-z))]
-    (doseq [z z-range]
-      (println "z=" z)
-      (println (state-level->string state z))
-      (println))))
+  (doseq [z (range-from-state state :z)]
+    (println "z=" z)
+    (println (state-level->string state z))
+    (println)))
 
 (defn surrounding-positions
   {:test (fn []
@@ -66,7 +62,7 @@
         (for [dx (range -1 2)
               dy (range -1 2)
               dz (range -1 2)
-              :when (not (= [dx dy dz] [0 0 0]))]
+              :when (not= [dx dy dz] [0 0 0])]
           {:x (+ (:x position) dx)
            :y (+ (:y position) dy)
            :z (+ (:z position) dz)})))
@@ -104,8 +100,8 @@
   [state times]
   (loop [state state
          i 0]
-    (println "Conway game" i)
-    (print-state state)
+    ;(println "Conway game" i)
+    ;(print-state state)
     (if (= i times)
       state
       (recur (conway-step state) (inc i)))))
@@ -124,7 +120,6 @@
 
   (let [puzzle "####...#\n......#.\n#..#.##.\n.#...#.#\n..###.#.\n##.###..\n.#...###\n.##....#"]
     (time (day17part1 puzzle)))
-  ;"Elapsed time: 476.285226 msecs" (with print-state)
-  ;"Elapsed time: 408.745401 msecs" (without print-state)
+  ;"Elapsed time: 183.535505 msecs"
   ;=> 286
   )
