@@ -5,7 +5,7 @@
 (defn inc-or-one [val] (if val (inc val) 1))
 
 
-(defn count-gags
+(defn count-gaps
   [numbers]
   (loop [number-map {}
          [number & numbers] numbers]
@@ -25,7 +25,7 @@
        (str/split-lines)
        (map read-string)
        (sort)
-       (count-gags)
+       (count-gaps)
        (map second)
        (map inc)
        (reduce *)))

@@ -4,9 +4,13 @@
 
 (defn conj-max-plus-3
   {:test (fn []
-           (is= (conj-max-plus-3 (list 1 3 2)) (list 6 1 3 2)))}
+           (is= (conj-max-plus-3 (list 1 3 2))
+                (list 6 1 3 2)))}
   [numbers]
-  (conj numbers (+ (reduce max numbers) 3)))
+  (conj numbers
+        (->> numbers
+             (reduce max)
+             (+ 3))))
 
 (defn string->state
   [string]
@@ -24,8 +28,7 @@
     (if (or (empty? numbers)
             (> (- jump number) 3))
       jump-set
-      (let [jump-set (conj jump-set jump)]
-        (recur jump-set numbers)))))
+        (recur (conj jump-set jump) numbers))))
 
 (defn possible-jumps
   [numbers]
