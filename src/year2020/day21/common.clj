@@ -74,9 +74,9 @@
 (defn allergen-words
   {:test (fn []
            (is= (allergen-words (string->state example-text))
-                [["dairy" #{"mxmxvkd"}]
-                 ["soy" #{"sqjhc" "fvjkl"}]
-                 ["fish" #{"sqjhc" "mxmxvkd"}]]))}
+                {"dairy" #{"mxmxvkd"}
+                 "soy" #{"sqjhc" "fvjkl"}
+                 "fish" #{"sqjhc" "mxmxvkd"}}))}
   [state]
   (->> state
        (map second)
@@ -88,5 +88,6 @@
                                          (second)
                                          (contains? allergen))))
                     (map first)
-                    (apply set/intersection))]))))
+                    (apply set/intersection))]))
+       (into {})))
 

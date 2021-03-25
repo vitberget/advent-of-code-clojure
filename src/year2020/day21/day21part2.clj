@@ -4,42 +4,34 @@
             [clojure.set :as set]
             [year2020.day21.common :refer [string->state example-text puzzle allergen-words]]))
 
-
 (defn unique-allergens
   {:test (fn []
-           (is= (unique-allergens [["dairy" #{"mxmxvkd"}]
-                                   ["soy" #{"sqjhc" "fvjkl"}]
-                                   ["fish" #{"sqjhc" "mxmxvkd"}]])
+           (is= (unique-allergens {"dairy" #{"mxmxvkd"}
+                                   "soy"   #{"sqjhc" "fvjkl"}
+                                   "fish"  #{"sqjhc" "mxmxvkd"}})
                 {"dairy" "mxmxvkd"
                  "soy"   "fvjkl"
                  "fish"  "sqjhc"}))}
   [allergen-words]
-  (loop [aw-map (->> allergen-words
-                     (map (fn [[p1 p2]] {p1 p2}))
-                     (reduce merge))]
-    (let [mores (->> aw-map
-                     (filter (fn [[_ val]] (> (count val) 1))))]
+  (loop [allergen-words allergen-words]
+    (let [mores (filter (fn [[_ val]] (> (count val) 1)) allergen-words)]
       (if (empty? mores)
-        (->> aw-map
+        (->> allergen-words
              (map (fn [[k v]] [k (first v)]))
              (into {}))
         (let [mores-keys (->> mores
                               (map first)
                               (into #{}))
-              one-words (->> aw-map
+              one-words (->> allergen-words
                              (map second)
                              (filter (fn [s] (= 1 (count s))))
                              (apply set/union))
-              new-ones (->> aw-map
+              new-ones (->> allergen-words
                             (filter (fn [[k _]] (contains? mores-keys k)))
-                            (map (fn [[key value]]
-                                   [key (->> value
-                                             (filter (fn [v]
-                                                       (not (contains? one-words v)))))]))
+                            (map (fn [[key value]] [key (set/difference value one-words)]))
                             (filter (fn [[_ value]] (= 1 (count value))))
-                            (map (fn [[key value]] [key (into #{} value)]))
                             (into {}))]
-          (recur (merge aw-map new-ones)))))))
+          (recur (merge allergen-words new-ones)))))))
 
 (defn day21part2
   {:test (fn []
@@ -50,12 +42,12 @@
        (string->state)
        (allergen-words)
        (unique-allergens)
-       (sort (fn [[k1 _] [k2 _]] (.compareTo k1 k2)))
+       (into (sorted-map))
        (map second)
        (str/join ",")))
 
 (comment
-    (time (day21part2 puzzle))
+  (time (day21part2 puzzle))
   ;"Elapsed time: 2.72934 msecs"
   ;=> "spcqmzfg,rpf,dzqlq,pflk,bltrbvz,xbdh,spql,bltzkxx"
   )
