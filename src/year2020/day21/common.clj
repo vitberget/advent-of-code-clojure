@@ -54,8 +54,7 @@
            (str/split $ #"\s")
            (into #{} $))
      (as-> allergens $
-           (str/replace $ "," "")
-           (str/replace $ ")" "")
+           (str/replace $ #"[),]" "")
            (str/split $ #"\s")
            (into #{} $))]))
 
