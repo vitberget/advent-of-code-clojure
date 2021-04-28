@@ -13,7 +13,7 @@
 (defn indices->number
   [indices]
   (->> indices
-       (map (fn [num] (long (Math/pow 2 num))))
+       (map (fn [num] (bit-shift-left 1 num)))
        (reduce +)))
 
 (defn line-matching-digit->number

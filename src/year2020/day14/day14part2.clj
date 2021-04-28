@@ -1,39 +1,20 @@
 (ns year2020.day14.day14part2
   (:require [ysera.test :refer [is is= is-not deftest]]
+            [year2020.day14.day14part1 :refer [line-matching-digit->indices
+                                               indices->number
+                                               line-matching-digit->number]]
             [clojure.string :as str]))
-
-(defn line-matching-digit->indices
-  [line desired-digit]
-  (->> line
-       (reverse)
-       (map-indexed (fn [i c] [i c]))
-       (filter (fn [[_ c]] (= c desired-digit)))
-       (map first)))
-
-(defn indices->number
-  [indices]
-  (->> indices
-       (map (fn [num] (long (Math/pow 2 num))))
-       (reduce +)))
-
-(defn line-matching-digit->number
-  [line desired-digit]
-  (->> (line-matching-digit->indices line desired-digit)
-       (indices->number)))
 
 (defn memory-pos-modder [num mempos mask-xs]
   (let [xs-vls (->> mask-xs
-                    (map-indexed (fn [i x]
-                                   [x (->> i
-                                           (Math/pow 2)
-                                           (long))]))
+                    (map-indexed (fn [i x] [x (bit-shift-left 1 i)]))
                     (map (fn [[x v]] [x (bit-and v num)])))
         ones (->> xs-vls
-                  (filter (fn [[_ v]] (not= v 0)))
+                  (filter (fn [[_ v]] (not (zero? v))))
                   (map first)
                   (indices->number))
         zeros (->> xs-vls
-                   (filter (fn [[_ v]] (= v 0)))
+                   (filter (fn [[_ v]] (zero? v)))
                    (map first)
                    (indices->number)
                    (bit-xor Long/MAX_VALUE))]
@@ -49,8 +30,7 @@
   (let [mempos (bit-or mempos mask-ones)
         rng (range 0 (->> mask-xs
                           (count)
-                          (Math/pow 2)
-                          (long)))]
+                          (bit-shift-left 1)))]
     (->> rng
          (map (fn [num] (memory-pos-modder num mempos mask-xs)))
          (into #{}))))
@@ -72,7 +52,7 @@
     (cond
       (nil? line) memory
 
-      (str/starts-with? line "mask =")
+      (str/starts-with? line "mask = ")
       (let [[_ mask-string] (re-find #"mask = ([01X]+)" line)]
         (recur memory
                (line-matching-digit->number mask-string \1)
