@@ -47,6 +47,12 @@
             :w :n
             :e :s))))
 
+(defn manhattan [state]
+  (->> (select-keys state [:x :y])
+       (vals)
+       (map abs)
+       (reduce +)))
+
 (defn do-cmd
   [state line]
   (let [cmd (first line)
@@ -69,10 +75,7 @@
          [line & lines] (->> string
                              (str/split-lines))]
     (if (nil? line)
-      (->> (select-keys state [:x :y])
-           (vals)
-           (map abs)
-           (reduce +))
+      (manhattan state)
       (recur (do-cmd state line) lines))))
 
 (comment
