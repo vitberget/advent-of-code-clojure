@@ -9,7 +9,7 @@
 (defn north [state num] (update state :y - num))
 (defn south [state num] (update state :y + num))
 
-(defn cmd-F
+(defn forward
   [state num]
   (condp = (:dir state)
     :e (east state num)
@@ -56,7 +56,7 @@
       \S (south state number)
       \E (east state number)
       \W (west state number)
-      \F (cmd-F state number)
+      \F (forward state number)
       \L (left state number)
       \R (right state number))))
 
@@ -69,7 +69,10 @@
          [line & lines] (->> string
                              (str/split-lines))]
     (if (nil? line)
-      (+ (abs (:x state)) (abs (:y state)))
+      (->> (select-keys state [:x :y])
+           (vals)
+           (map abs)
+           (reduce +))
       (recur (do-cmd state line) lines))))
 
 (comment
