@@ -22,8 +22,7 @@
       (if (nil? num)
         counter
         (recur
-          (if (> (+ num prevnum-2 prevnum-3)
-                 (+ prevnum-1 prevnum-2 prevnum-3))
+          (if (> num prevnum-1)
             (inc counter)
             counter)
 
