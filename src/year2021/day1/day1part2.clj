@@ -1,35 +1,21 @@
 (ns year2021.day1.day1part2
   (:require [ysera.test :refer [is is= is-not deftest]]
-            [year2021.day1.day1puzzle :refer [day1-puzzle]]
-            [clojure.string :as str]))
+            [year2021.day1.day1puzzle :refer [day1-puzzle day1-example]]
+            [year2021.day1.day1part1 :refer [text->numbers]]))
 
 (defn day1-part2
   {:test (fn []
-           (is= (day1-part2 "199\n200\n208\n210\n200\n207\n240\n269\n260\n263")
-                5))}
+           (is= (day1-part2 day1-example) 5))}
   [text]
-  (let [numbers (->> text
-                     (str/split-lines)
-                     (map read-string))]
+  (let [numbers (text->numbers text)]
     (loop [counter 0
-
-           prevnum-1 (nth numbers 0)
-           prevnum-2 (nth numbers 1)
-           prevnum-3 (nth numbers 2)
-
-           [num & numbers] (drop 3 numbers)]
-
-      (if (nil? num)
+           [previous & prevnums] (take 3 numbers)
+           [current & numbers] (drop 3 numbers)]
+      (if (nil? current)
         counter
         (recur
-          (if (> num prevnum-1)
-            (inc counter)
-            counter)
-
-          prevnum-2
-          prevnum-3
-          num
-
+          (if (> current previous) (inc counter) counter)
+          (concat prevnums [current])
           numbers)))))
 
 (comment
