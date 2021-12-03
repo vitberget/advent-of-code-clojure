@@ -47,13 +47,13 @@
                  :epsilon 9})
            )}
   [gamma-epsilon-state]
-  {:gamma (reduce (fn [a [k v]]
-                    (if (> (get v \1) (get v \0))
-                      (+ a (math/expt 2 k))
-                      a))
-                  0
-                  gamma-epsilon-state
-                  )
+  {:gamma   (reduce (fn [a [k v]]
+                      (if (> (get v \1) (get v \0))
+                        (+ a (math/expt 2 k))
+                        a))
+                    0
+                    gamma-epsilon-state
+                    )
    :epsilon (reduce (fn [a [k v]]
                       (if (< (get v \1) (get v \0))
                         (+ a (math/expt 2 k))
@@ -67,11 +67,11 @@
            (is= (day3-part1 day3-example) 198))}
   [text]
   (->> text
-        (str/split-lines )
-        (reduce count-gamma-and-epsilon {} )
-        (calculate-gamma-and-epsilon )
-        (vals )
-        (reduce *)))
+       (str/split-lines)
+       (reduce count-gamma-and-epsilon {})
+       (calculate-gamma-and-epsilon)
+       (vals)
+       (reduce *)))
 
 
 (comment
