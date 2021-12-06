@@ -47,8 +47,7 @@
   {:test (fn []
            (is= (day6-part2 day6-example) 26984457539))}
   [text]
-  (->> (reduce (fn [a _]
-                 (one-day a))
+  (->> (reduce (fn [a _] (one-day a))
                (text->state text)
                (range 256))
        (vals)

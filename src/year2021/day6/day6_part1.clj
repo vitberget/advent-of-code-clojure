@@ -24,14 +24,12 @@
     (if (nil? n)
       (concat new-numbers new-lanterns)
       (if (= 0 n)
-        (recur
-          numbers
-          (conj new-numbers 6)
-          (conj new-lanterns 8))
-        (recur
-          numbers
-          (conj new-numbers (dec n))
-          new-lanterns)))))
+        (recur numbers
+               (conj new-numbers 6)
+               (conj new-lanterns 8))
+        (recur numbers
+               (conj new-numbers (dec n))
+               new-lanterns)))))
 
 (defn day6-part1
   {:test (fn []
@@ -39,11 +37,10 @@
   [text]
   (let [numbers (->> text
                      (text->numbers))]
-
     (->> (reduce (fn [a _] (one-day a))
-                numbers
-                (range 80))
-        (count))))
+                 numbers
+                 (range 80))
+         (count))))
 
 (comment
   (time (day6-part1 day6-puzzle))
