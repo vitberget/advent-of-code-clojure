@@ -1,5 +1,6 @@
 (ns year2021.day6.day6-part2
   (:require [ysera.test :refer [is is= is-not deftest]]
+            [clojure.java.io :as io]
             [year2021.day6.day6-data :refer [day6-example day6-puzzle]]
             [clojure.string :as str]))
 
@@ -55,6 +56,7 @@
 
 (comment
   (time (day6-part2 day6-puzzle))
+  (time (day6-part2 (slurp (io/resource "year2021/day6/puzzle.txt"))))
   ;"Elapsed time: 3.059869 msecs"
   ;=> 1592918715629
   )
