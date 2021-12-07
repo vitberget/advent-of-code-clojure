@@ -21,8 +21,7 @@
   [freqs depth]
   (->> freqs
        (map (fn [[d n]] (* n (math/abs (- depth d)))))
-       (reduce +))
-  )
+       (reduce +)))
 
 (defn day7-part1
   {:test (fn []
