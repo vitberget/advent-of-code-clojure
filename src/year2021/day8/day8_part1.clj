@@ -3,18 +3,26 @@
             [year2021.day8.day8-data :refer [day8-example day8-puzzle]]
             [clojure.string :as str]))
 
+(def lengths-of-digits-1-4-7-8 #{2                          ; digit 1 has 2 segments
+                                 4                          ; digit 4 has 4 segments
+                                 3                          ; digit 7 has 3 segments
+                                 7})                        ; digit 8 has 7 segments
+
 (defn day8-part1
   {:test (fn []
-           (is= (day8-part1 day8-example) 26))}
+           (is= (day8-part1 day8-example) 26)
+           (is= (day8-part1 day8-puzzle) 387))}
   [text]
   (->> text
        (str/split-lines)
-       (map (fn [line] (second (str/split line #" \| "))))
+       (map #(-> %
+                 (str/split #" \| ")
+                 (second)))
        (map str/trim)
-       (mapcat (fn [line] (str/split line #"\s+")))
-       (filter (fn [word] (contains?
-                            #{2 4 3 7}                      ; lenth of digit 1 4 7 8
-                            (count word))))
+       (mapcat #(str/split % #"\s+"))
+       (filter #(contains?
+                  lengths-of-digits-1-4-7-8
+                  (count %)))
        (count)))
 
 (comment

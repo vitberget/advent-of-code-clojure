@@ -4,44 +4,59 @@
             [clojure.set :refer [subset?]]
             [clojure.string :as str]))
 
+(defn first-in
+  [collection filter-fn]
+  (->> collection
+       (filter filter-fn)
+       (first)))
+
+(defn first-not-in
+  [collection remove-fn]
+  (->> collection
+       (remove remove-fn)
+       (first)))
+
+(def into-set (partial into #{}))
+
 (defn parse-the-digits
   {:test (fn []
            (is= (parse-the-digits "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab")
-                {(into #{} "acedgfb") 8
-                 (into #{} "cdfbe")   5
-                 (into #{} "gcdfa")   2
-                 (into #{} "fbcad")   3
-                 (into #{} "dab")     7
-                 (into #{} "cefabd")  9
-                 (into #{} "cdfgeb")  6
-                 (into #{} "eafb")    4
-                 (into #{} "cagedb")  0
-                 (into #{} "ab")      1}))}
+                {(into-set "acedgfb") 8
+                 (into-set "cdfbe")   5
+                 (into-set "gcdfa")   2
+                 (into-set "fbcad")   3
+                 (into-set "dab")     7
+                 (into-set "cefabd")  9
+                 (into-set "cdfgeb")  6
+                 (into-set "eafb")    4
+                 (into-set "cagedb")  0
+                 (into-set "ab")      1}))}
   [line]
   (let [sets (as-> line $
                    (str/trim $)
                    (str/split $ #"\s+")
-                   (map (fn [word] (into #{} word)) $))
-        set-1 (first (filter (fn [s] (= 2 (count s))) sets))
-        set-2 (first (filter (fn [s] (= 4 (count s))) sets))
-        set-4 (first (filter (fn [s] (= 3 (count s))) sets))
-        set-8 (first (filter (fn [s] (= 7 (count s))) sets))
+                   (map into-set $))
+        set-1 (first-in sets #(= 2 (count %)))
+        set-4 (first-in sets #(= 4 (count %)))
+        set-7 (first-in sets #(= 3 (count %)))
+        set-8 (first-in sets #(= 7 (count %)))
 
-        length-5 (filter (fn [s] (= 5 (count s))) sets)
-        length-6 (filter (fn [s] (= 6 (count s))) sets)
+        length-5 (->> sets (filter #(= 5 (count %))))
+        length-6 (->> sets (filter #(= 6 (count %))))
 
-        set-3 (first (filter (fn [s] (subset? set-1 s)) length-5))
+        set-3 (first-in length-5 #(subset? set-1 %))
 
-        set-6 (first (remove (fn [s] (subset? set-4 s)) length-6))
-        set-9 (first (filter (fn [s] (subset? set-3 s)) length-6))
-        set-0 (first (remove (fn [s] (or (= s set-6) (= s set-9))) length-6))
+        set-6 (first-not-in length-6 #(subset? set-7 %))
+        set-9 (first-in length-6 #(subset? set-3 %))
+        set-0 (first-not-in length-6 #(or (= % set-6)
+                                          (= % set-9)))
 
         upper-right (apply disj set-1 set-6)
-        length-5 (filter (fn [s] (not (= s set-3))) length-5)
+        length-5 (->> length-5 (remove #(= % set-3)))
 
-        s2 (first (filter (fn [s] (subset? upper-right s)) length-5))
-        s5 (first (remove (fn [s] (= s s2)) length-5))]
-    {set-1 1 set-2 4 set-4 7 set-8 8 set-3 3 set-6 6 set-9 9 set-0 0 s2 2 s5 5}))
+        set-2 (first-in length-5 #(subset? upper-right %))
+        set-5 (first-not-in length-5 #(= % set-2))]
+    {set-0 0 set-1 1 set-2 2 set-3 3 set-4 4 set-5 5 set-6 6 set-7 7 set-8 8 set-9 9}))
 
 (defn calc-line
   {:test (fn []
@@ -57,23 +72,24 @@
            (is= (calc-line "egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb") 8717)
            (is= (calc-line "gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce") 4315))}
   [line]
-  (let [[digitstr numstr] (str/split line #" \| ")
-        digits (parse-the-digits digitstr)
-        numsets (as-> numstr $
-                      (str/split $ #"\s+")
-                      (map (fn[s] (into #{} s)) $))]
-    (->> numsets
-          (map (fn [s] (get digits s)))
-          (reduce (fn [a v] (+ (* a 10) v))))))
+  (let [[digits-str numbers-str] (str/split line #" \| ")
+        digits-sets (parse-the-digits digits-str)
+        numbers-sets (as-> numbers-str $
+                           (str/split $ #"\s+")
+                           (map into-set $))]
+    (->> numbers-sets
+         (map (fn [s] (get digits-sets s)))
+         (reduce (fn [accumulator digit-of-number] (+ (* accumulator 10)
+                                                      digit-of-number))))))
 
 (defn day8-part2
   {:test (fn []
            (is= (day8-part2 day8-example) 61229))}
   [text]
   (->> text
-        (str/split-lines)
-        (map calc-line)
-        (reduce +)))
+       (str/split-lines)
+       (map calc-line)
+       (reduce +)))
 
 (comment
   (time (day8-part2 day8-puzzle))
