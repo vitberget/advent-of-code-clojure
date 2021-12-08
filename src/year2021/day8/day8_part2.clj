@@ -1,6 +1,7 @@
 (ns year2021.day8.day8-part2
   (:require [ysera.test :refer [is is= is-not deftest]]
             [year2021.day8.day8-data :refer [day8-example day8-puzzle]]
+            [year2021.day8.day8-part1 :refer [split-whitespace]]
             [clojure.set :refer [subset?]]
             [clojure.string :as str]))
 
@@ -32,10 +33,10 @@
                  (into-set "eafb")    4
                  (into-set "ab")      1}))}
   [line]
-  (let [sets (as-> line $
-                   (str/trim $)
-                   (str/split $ #"\s+")
-                   (map into-set $))
+  (let [sets (->> line
+                  (str/trim)
+                  (split-whitespace)
+                  (map into-set))
         set-1 (first-in sets #(= 2 (count %)))              ; digit 1 is the only one with 2 segments
         set-4 (first-in sets #(= 4 (count %)))              ; digit 4 is the only one with 4 segments
         set-7 (first-in sets #(= 3 (count %)))              ; digit 7 is the only one with 3 segments
@@ -73,17 +74,18 @@
   [line]
   (let [[digits-str numbers-str] (str/split line #" \| ")
         digits-sets (parse-the-digits digits-str)
-        numbers-sets (as-> numbers-str $
-                           (str/split $ #"\s+")
-                           (map into-set $))]
+        numbers-sets (->> numbers-str
+                          (split-whitespace)
+                          (map into-set))]
     (->> numbers-sets
-         (map (fn [s] (get digits-sets s)))
+         (map #(get digits-sets %))
          (reduce (fn [accumulator digit-of-number] (+ (* accumulator 10)
                                                       digit-of-number))))))
 
 (defn day8-part2
   {:test (fn []
-           (is= (day8-part2 day8-example) 61229))}
+           (is= (day8-part2 day8-example) 61229)
+           (is= (day8-part2 day8-puzzle) 986034))}
   [text]
   (->> text
        (str/split-lines)
