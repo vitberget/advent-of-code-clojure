@@ -7,18 +7,15 @@
   {:test (fn []
            (is= (day8-part1 day8-example) 26))}
   [text]
-  (as-> text $
-        (str/split-lines $)
-        (map (fn [line] (second (str/split line #" \| "))) $)
-        (map str/trim $)
-        (mapcat (fn [line] (str/split line #"\s+")) $)
-        (filter (fn [word] (let [c (count word)]
-                             (or (= c 2) ; 1
-                                 (= c 4) ; 4
-                                 (= c 3) ; 7
-                                 (= c 7)))) ; 8
-                $)
-        (count $)))
+  (->> text
+       (str/split-lines)
+       (map (fn [line] (second (str/split line #" \| "))))
+       (map str/trim)
+       (mapcat (fn [line] (str/split line #"\s+")))
+       (filter (fn [word] (contains?
+                            #{2 4 3 7}                      ; lenth of digit 1 4 7 8
+                            (count word))))
+       (count)))
 
 (comment
   (time (day8-part1 day8-puzzle))

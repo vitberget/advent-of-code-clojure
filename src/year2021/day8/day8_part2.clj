@@ -22,23 +22,26 @@
                    (str/trim $)
                    (str/split $ #"\s+")
                    (map (fn [word] (into #{} word)) $))
-        s1 (first (filter (fn [s] (= 2 (count s))) sets))
-        s4 (first (filter (fn [s] (= 4 (count s))) sets))
-        s7 (first (filter (fn [s] (= 3 (count s))) sets))
-        s8 (first (filter (fn [s] (= 7 (count s))) sets))
-        l5s (filter (fn [s] (= 5 (count s))) sets)
-        l6s (filter (fn [s] (= 6 (count s))) sets)
-        s3 (first (filter (fn [s] (subset? s1 s)) l5s))
+        set-1 (first (filter (fn [s] (= 2 (count s))) sets))
+        set-2 (first (filter (fn [s] (= 4 (count s))) sets))
+        set-4 (first (filter (fn [s] (= 3 (count s))) sets))
+        set-8 (first (filter (fn [s] (= 7 (count s))) sets))
 
-        s6 (first (filter (fn [s] (not (subset? s7 s))) l6s))
-        s9 (first (filter (fn [s] (subset? s3 s)) l6s))
-        s0 (first (filter (fn [s] (not (or (= s s6) (= s s9)))) l6s))
-        upper-right (apply disj s1 s6)
+        length-5 (filter (fn [s] (= 5 (count s))) sets)
+        length-6 (filter (fn [s] (= 6 (count s))) sets)
 
-        l5s (filter (fn [s] (not (= s s3))) l5s)
-        s2 (first (filter (fn [s] (subset? upper-right s)) l5s))
-        s5 (first (filter (fn [s] (not (= s s2))) l5s))]
-    {s1 1 s4 4 s7 7 s8 8 s3 3 s6 6 s9 9 s0 0 s2 2 s5 5}))
+        set-3 (first (filter (fn [s] (subset? set-1 s)) length-5))
+
+        set-6 (first (remove (fn [s] (subset? set-4 s)) length-6))
+        set-9 (first (filter (fn [s] (subset? set-3 s)) length-6))
+        set-0 (first (remove (fn [s] (or (= s set-6) (= s set-9))) length-6))
+
+        upper-right (apply disj set-1 set-6)
+        length-5 (filter (fn [s] (not (= s set-3))) length-5)
+
+        s2 (first (filter (fn [s] (subset? upper-right s)) length-5))
+        s5 (first (remove (fn [s] (= s s2)) length-5))]
+    {set-1 1 set-2 4 set-4 7 set-8 8 set-3 3 set-6 6 set-9 9 set-0 0 s2 2 s5 5}))
 
 (defn calc-line
   {:test (fn []
@@ -71,7 +74,6 @@
         (str/split-lines)
         (map calc-line)
         (reduce +)))
-
 
 (comment
   (time (day8-part2 day8-puzzle))
