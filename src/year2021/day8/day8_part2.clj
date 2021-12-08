@@ -28,34 +28,33 @@
                  (into-set "dab")     7
                  (into-set "cefabd")  9
                  (into-set "cdfgeb")  6
-                 (into-set "eafb")    4
                  (into-set "cagedb")  0
+                 (into-set "eafb")    4
                  (into-set "ab")      1}))}
   [line]
   (let [sets (as-> line $
                    (str/trim $)
                    (str/split $ #"\s+")
                    (map into-set $))
-        set-1 (first-in sets #(= 2 (count %)))
-        set-4 (first-in sets #(= 4 (count %)))
-        set-7 (first-in sets #(= 3 (count %)))
-        set-8 (first-in sets #(= 7 (count %)))
+        set-1 (first-in sets #(= 2 (count %)))              ; digit 1 is the only one with 2 segments
+        set-4 (first-in sets #(= 4 (count %)))              ; digit 4 is the only one with 4 segments
+        set-7 (first-in sets #(= 3 (count %)))              ; digit 7 is the only one with 3 segments
+        set-8 (first-in sets #(= 7 (count %)))              ; digit 8 is the only one with 7 segments
 
-        length-5 (->> sets (filter #(= 5 (count %))))
-        length-6 (->> sets (filter #(= 6 (count %))))
+        segments-5 (->> sets (filter #(= 5 (count %))))     ; digits 2,3,5 have 5 segments
+        segments-6 (->> sets (filter #(= 6 (count %))))     ; digits 0,6,9 have 6 segments
 
-        set-3 (first-in length-5 #(subset? set-1 %))
+        set-3 (first-in segments-5 #(subset? set-1 %))      ; digit 3 is the only of 2,3,5 that have the digit 1 segments in it
+        segments-5 (->> segments-5 (remove #(= % set-3)))   ; remove digit 3 from the 5 segment collection
 
-        set-6 (first-not-in length-6 #(subset? set-7 %))
-        set-9 (first-in length-6 #(subset? set-3 %))
-        set-0 (first-not-in length-6 #(or (= % set-6)
-                                          (= % set-9)))
+        set-6 (first-not-in segments-6 #(subset? set-7 %))  ; digit 6 is the only of 0,6,9 to not have digit 7 segments in it
+        set-9 (first-in segments-6 #(subset? set-3 %))      ; digit 9 is the only of 0,6,9 to have all digit 3 segments in it
+        set-0 (first-not-in segments-6 #(or (= % set-6)     ; digit 0 is the "remainder" of 0,6,9
+                                            (= % set-9)))
 
-        upper-right (apply disj set-1 set-6)
-        length-5 (->> length-5 (remove #(= % set-3)))
-
-        set-2 (first-in length-5 #(subset? upper-right %))
-        set-5 (first-not-in length-5 #(= % set-2))]
+        upper-right (apply disj set-1 set-6)                ; to remove the lower right segment from digit 1, subtract digit 6 segments from it, leaving only upper right
+        set-2 (first-in segments-5 #(subset? upper-right %)) ; digit 2 is the only of of 2,5 to have the upper right segment
+        set-5 (first-not-in segments-5 #(= % set-2))]       ; digit 5 is the only one left of 2,5
     {set-0 0 set-1 1 set-2 2 set-3 3 set-4 4 set-5 5 set-6 6 set-7 7 set-8 8 set-9 9}))
 
 (defn calc-line
