@@ -3,32 +3,39 @@
             [year2021.day9.day9-data :refer [day9-example day9-puzzle]]
             [clojure.string :as str]))
 
+(defn char->number
+  [digit-char]
+  (- (int digit-char)
+     (int \0)))
+
+(defn line->number-map
+  [y line]
+  (map-indexed (fn [x c]
+                 {[x y] (char->number c)})
+               line))
+
 (defn lines->number-map
   [lines]
   (->> lines
-       (map-indexed (fn [y line]
-                      (->> line
-                           (map-indexed (fn [x c]
-                                          {[x y] (- (int c)
-                                                    (int \0))})))))
+       (map-indexed line->number-map)
        (flatten)
        (reduce merge)))
 
 (def surrounding
-  (list [-1 -1] [-1 0] [-1 1]
-        [1 -1] [1 0] [1 1]
-        [0 -1] [0 1]))
+  (for [x [-1 0 1]
+        y [-1 0 1]
+        :when (not= 0 x y)]
+    [x y]))
 
 (defn low-point-or-nil
-  [position number-map]
+  [[px py :as position] number-map]
   (let [number (get number-map position)]
-    (loop [[s & surrounding] surrounding]
-      (if (nil? s)
+    (loop [[[dx dy] & surrounding] surrounding]
+      (if (nil? dx)
         number
-        (let [s-num (get number-map [(- (first position) (first s))
-                                     (- (second position) (second s))])]
-          (when (or (nil? s-num)
-                    (< number s-num))
+        (let [surrounding-number (get number-map [(- px dx) (- py dy)])]
+          (when (or (nil? surrounding-number)
+                    (< number surrounding-number))
             (recur surrounding)))))))
 
 (defn day9-part1
