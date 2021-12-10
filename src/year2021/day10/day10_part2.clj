@@ -4,7 +4,7 @@
             [year2021.day10.day10-part1 :refer [left? matching?]]
             [clojure.string :as str]))
 
-(defn turn-around
+(defn char->opposite-char
   [char]
   (condp = char
     \( \)
@@ -12,53 +12,55 @@
     \{ \}
     \< \>))
 
-(defn complete-string
+(defn line->completion
   {:test (fn []
-           (is= (complete-string "{([(<{}[<>[]}>{[]{[(<()>") nil)
-           (is= (complete-string "[[<[([]))<([[{}[[()]]]") nil)
-           (is= (complete-string "[{[{({}]{}}([{[{{{}}([]") nil)
-           (is= (complete-string "[<(<(<(<{}))><([]([]()") nil)
-           (is= (complete-string "<{([([[(<>()){}]>(<<{{") nil)
+           (is= (line->completion "{([(<{}[<>[]}>{[]{[(<()>") nil)
+           (is= (line->completion "[[<[([]))<([[{}[[()]]]") nil)
+           (is= (line->completion "[{[{({}]{}}([{[{{{}}([]") nil)
+           (is= (line->completion "[<(<(<(<{}))><([]([]()") nil)
+           (is= (line->completion "<{([([[(<>()){}]>(<<{{") nil)
 
-           (is= (apply str (complete-string "[({(<(())[]>[[{[]{<()<>>")) "}}]])})]")
-           (is= (apply str (complete-string "[(()[<>])]({[<{<<[]>>(")) ")}>]})")
-           (is= (apply str (complete-string "(((({<>}<{<{<>}{[]{[]{}")) "}}>}>))))")
-           (is= (apply str (complete-string "{<[[]]>}<{[{[{[]{()[[[]")) "]]}}]}]}>")
-           (is= (apply str (complete-string "<{([{{}}[<[[[<>{}]]]>[]]")) "])}>"))}
+           (is= (apply str (line->completion "[({(<(())[]>[[{[]{<()<>>")) "}}]])})]")
+           (is= (apply str (line->completion "[(()[<>])]({[<{<<[]>>(")) ")}>]})")
+           (is= (apply str (line->completion "(((({<>}<{<{<>}{[]{[]{}")) "}}>}>))))")
+           (is= (apply str (line->completion "{<[[]]>}<{[{[{[]{()[[[]")) "]]}}]}]}>")
+           (is= (apply str (line->completion "<{([{{}}[<[[[<>{}]]]>[]]")) "])}>"))}
   [line]
   (loop [[char & line] line
          stack (list)]
-    (let [top (first stack)]
-      (cond (nil? char)
-            (map turn-around stack)
+    (cond (nil? char)
+          (map char->opposite-char stack)
 
-            (left? char)
-            (recur line (conj stack char))
+          (left? char)
+          (recur line (conj stack char))
 
-            (matching? top char)
-            (recur line (rest stack))
+          (matching? (first stack) char)
+          (recur line (rest stack))
 
-            :wrong-char nil))))
+          :or-else nil)))
 
-(defn score
+(defn score-char
+  [char] (condp = char
+           \) 1
+           \] 2
+           \} 3
+           \> 4))
+
+(defn score-completion
   {:test (fn []
-           (let [sfn (fn [txt] (->> (str/split txt #"")
-                                    (map first)
-                                    (into (list))
-                                    (reverse)))]
-             (is= (score (sfn "}}]])})]")) 288957)
-             (is= (score (sfn ")}>]})")) 5566)
-             (is= (score (sfn "}}>}>))))")) 1480781)
-             (is= (score (sfn "]]}}]}]}>")) 995444)
-             (is= (score (sfn "])}>")) 294)))}
+           (let [help-fn (fn [txt] (->> (str/split txt #"")
+                                        (map first)
+                                        (into (list))
+                                        (reverse)))]
+             (is= (score-completion (help-fn "}}]])})]")) 288957)
+             (is= (score-completion (help-fn ")}>]})")) 5566)
+             (is= (score-completion (help-fn "}}>}>))))")) 1480781)
+             (is= (score-completion (help-fn "]]}}]}]}>")) 995444)
+             (is= (score-completion (help-fn "])}>")) 294)))}
   [completion]
-  (reduce (fn [a v]
-            (+ (* a 5)
-               (condp = v
-                 \) 1
-                 \] 2
-                 \} 3
-                 \> 4)))
+  (reduce (fn [accumulator char]
+            (+ (* accumulator 5)
+               (score-char char)))
           0
           completion))
 
@@ -78,13 +80,13 @@
   [text]
   (->> text
        (str/split-lines)
-       (map complete-string)
+       (map line->completion)
        (remove nil?)
-       (map score)
+       (map score-completion)
        (middle-score)))
 
 (comment
   (time (day10-part2 day10-puzzle))
   ;"Elapsed time: 3.647391 msecs"
-  ;=>
+  ;=> 2182912364
   )

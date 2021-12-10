@@ -17,35 +17,34 @@
       (and (= left \{) (= right \}))
       (and (= left \<) (= right \>))))
 
-(defn corrupt-char
+(defn line->corrupt-char
   {:test (fn []
-           (is= (corrupt-char "([<>]}") \})
-           (is= (corrupt-char "{([(<{}[<>[]}>{[]{[(<()>") \})
-           (is= (corrupt-char "[[<[([]))<([[{}[[()]]]") \))
-           (is= (corrupt-char "[{[{({}]{}}([{[{{{}}([]") \])
-           (is= (corrupt-char "[<(<(<(<{}))><([]([]()") \))
-           (is= (corrupt-char "<{([([[(<>()){}]>(<<{{") \>)
-           (is= (corrupt-char "[({(<(())[]>[[{[]{<()<>>") nil)
-           (is= (corrupt-char "[(()[<>])]({[<{<<[]>>(") nil)
-           (is= (corrupt-char "(((({<>}<{<{<>}{[]{[]{}") nil)
-           (is= (corrupt-char "{<[[]]>}<{[{[{[]{()[[[]") nil)
-           (is= (corrupt-char "<{([{{}}[<[[[<>{}]]]>[]]") nil))}
+           (is= (line->corrupt-char "([<>]}") \})
+           (is= (line->corrupt-char "{([(<{}[<>[]}>{[]{[(<()>") \})
+           (is= (line->corrupt-char "[[<[([]))<([[{}[[()]]]") \))
+           (is= (line->corrupt-char "[{[{({}]{}}([{[{{{}}([]") \])
+           (is= (line->corrupt-char "[<(<(<(<{}))><([]([]()") \))
+           (is= (line->corrupt-char "<{([([[(<>()){}]>(<<{{") \>)
+           (is= (line->corrupt-char "[({(<(())[]>[[{[]{<()<>>") nil)
+           (is= (line->corrupt-char "[(()[<>])]({[<{<<[]>>(") nil)
+           (is= (line->corrupt-char "(((({<>}<{<{<>}{[]{[]{}") nil)
+           (is= (line->corrupt-char "{<[[]]>}<{[{[{[]{()[[[]") nil)
+           (is= (line->corrupt-char "<{([{{}}[<[[[<>{}]]]>[]]") nil))}
   [line]
   (loop [[char & line] line
          stack (list)]
-    (let [top (first stack)]
-      (cond (nil? char)
-            nil
+    (cond (nil? char)
+          nil
 
-            (left? char)
-            (recur line (conj stack char))
+          (left? char)
+          (recur line (conj stack char))
 
-            (matching? top char)
-            (recur line (rest stack))
+          (matching? (first stack) char)
+          (recur line (rest stack))
 
-            :wrong-char char))))
+          :or-else char)))
 
-(defn score
+(defn score-char
   [char]
   (condp = char
     \) 3
@@ -60,9 +59,9 @@
   [text]
   (->> text
        (str/split-lines)
-       (map corrupt-char)
+       (map line->corrupt-char)
        (remove nil?)
-       (map score)
+       (map score-char)
        (reduce +)))
 
 (comment
