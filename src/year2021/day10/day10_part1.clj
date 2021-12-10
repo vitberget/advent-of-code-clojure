@@ -51,8 +51,7 @@
     \) 3
     \] 57
     \} 1197
-    \> 25137
-    0))
+    \> 25137))
 
 (defn day10-part1
   {:test (fn []
@@ -62,6 +61,7 @@
   (->> text
        (str/split-lines)
        (map corrupt-char)
+       (remove nil?)
        (map score)
        (reduce +)))
 
