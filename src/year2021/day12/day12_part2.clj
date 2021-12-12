@@ -84,7 +84,6 @@
 
        (and (part1/lower-case? next-cave)
             (not (path-is-ok-lowercase-cave? path next-cave)))
-
        (recur paths
               path
               rest-of-caves)
