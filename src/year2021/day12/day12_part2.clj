@@ -89,20 +89,17 @@
               path
               rest-of-caves)
 
-
        :else
        (recur (set/union paths (cave-system->paths cave-system (conj path next-cave)))
               path
               rest-of-caves)))))
-
 
 (defn day12-part2
   {:test (fn []
            (is= (day12-part2 day12-example-1) 36)
            (is= (day12-part2 day12-example-2) 103)
            (is= (day12-part2 day12-example-3) 3509)
-           (is= (day12-part2 day12-puzzle) 4573)
-           )}
+           (is= (day12-part2 day12-puzzle) 117509))}
   [text]
   (-> text
       (part1/text->cave-system)

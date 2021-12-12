@@ -92,7 +92,6 @@
               path
               rest-of-caves)))))
 
-
 (defn day12-part1
   {:test (fn []
            (is= (day12-part1 day12-example-1) 10)
@@ -104,7 +103,6 @@
       (text->cave-system)
       (cave-system->paths)
       (count)))
-
 
 (comment
   (time (day12-part1 day12-puzzle))
