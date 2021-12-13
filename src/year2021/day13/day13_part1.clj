@@ -42,9 +42,7 @@
               (update paper :dots conj (as-> line $
                                              (str/split $ #",")
                                              (map read-string $)
-                                             (vec $)))
-
-              ))
+                                             (vec $)))))
           {:dots #{} :folds []}
           (str/split-lines text)))
 
@@ -60,14 +58,12 @@
   (let [fold-dots (->> dots
                        (filter (fn [[x y]]
                                  (> (if (= :x f-direction) x y)
-                                    f-number)))
-                       (into #{}))
-        paper (assoc paper :dots (set/difference dots fold-dots))]
-    (reduce (fn [paper [fx fy :as prepos]]
-              (let [position (if (= :x f-direction)
-                               [(fold-number fx fold) fy]
-                               [fx (fold-number fy fold)])]
-                (update paper :dots conj position)))
+                                    f-number))))
+        paper (assoc paper :dots (set/difference dots (into #{} fold-dots)))]
+    (reduce (fn [paper [x y]]
+              (update paper :dots conj (if (= :x f-direction)
+                                         [(fold-number x fold) y]
+                                         [x (fold-number y fold)])))
             paper
             fold-dots)))
 
