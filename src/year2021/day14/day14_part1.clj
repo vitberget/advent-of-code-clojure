@@ -24,15 +24,11 @@
 (defn do-step
   {:test (fn []
            (let [{rules :rules} (text->template-and-insert-rules day14-example)]
-
              ;Template:     NNCB
              ;After step 1: NCNBCHB
              (is= (do-step "NNCB" rules) "NCNBCHB")
              ;After step 2: NBCCNBBBCBHCB
-             (is= (do-step "NCNBCHB" rules) "NBCCNBBBCBHCB")
-             ;After step 3: NBBBCNCCNBBNBNBBCHBHHBCHB
-             ;After step 4: NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB
-             ))}
+             (is= (do-step "NCNBCHB" rules) "NBCCNBBBCBHCB")))}
   [template rules]
   (reduce (fn [acc [l1 l2]]
             (if-let [letter (get rules (str l1 l2))]
