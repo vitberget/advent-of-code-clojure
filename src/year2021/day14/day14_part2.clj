@@ -2,12 +2,11 @@
   (:require [ysera.test :refer [is is= is-not deftest]]
             [year2021.day14.day14-data :refer [day14-example day14-puzzle]]
             [year2021.day14.day14-part1 :as part1]
-            [clojure.string :as string]
             [clojure.set :as set]))
 
 (defn string->pair-map
-  [long-string]
-  (->> long-string
+  [string-with-letters]
+  (->> string-with-letters
        (partition 2 1)
        (map #(apply str %))
        (frequencies)))
@@ -25,16 +24,15 @@
              (is= (do-step step-2 rules) step-3)
              (is= (do-step step-3 rules) step-4)))}
   [incoming-pair-map rules]
-  (reduce (fn [pair-map key]
-            (if-let [letter (get rules key)]
-              (let [count (get incoming-pair-map key)
-                    w1 (str (first key) letter)
-                    w2 (str letter (second key))]
+  (reduce (fn [pair-map pair]
+            (if-let [letter (get rules pair)]
+              (let [count (get incoming-pair-map pair)
+                    mapped-pair-1 (str (first pair) letter)
+                    mapped-pair-2 (str letter (second pair))]
                 (-> pair-map
-                    (update w1 (fn [v] (+ (or v 0) count)))
-                    (update w2 (fn [v] (+ (or v 0) count)))))
-              pair-map
-              ))
+                    (update mapped-pair-1 (fn [v] (+ (or v 0) count)))
+                    (update mapped-pair-2 (fn [v] (+ (or v 0) count)))))
+              pair-map))
           {}
           (keys incoming-pair-map)))
 
@@ -45,24 +43,31 @@
   [two-map]
   (let [{first-letters  :first
          second-letters :second}
-        (reduce (fn [one-map [[l1 l2] value]]
+        (reduce (fn [one-map [[first-letter second-letter] value]]
                   (-> one-map
-                      (update-in [:first l1] (fn [v] (+ (or v 0) value)))
-                      (update-in [:second l2] (fn [v] (+ (or v 0) value)))))
+                      (update-in [:first first-letter] #(+ (or % 0) value))
+                      (update-in [:second second-letter] #(+ (or % 0) value))))
                 {:first  {}
                  :second {}}
                 two-map)
-        letters (set/union (-> first-letters
-                               (keys)
-                               (into #{}))
-                           (-> second-letters
-                               (keys)
-                               (into #{})))]
+        all-letters (set/union (-> first-letters
+                                   (keys)
+                                   (into #{}))
+                               (-> second-letters
+                                   (keys)
+                                   (into #{})))]
     (reduce (fn [one-map letter]
               (assoc one-map letter (max (get first-letters letter)
                                          (get second-letters letter))))
             {}
-            letters)))
+            all-letters)))
+
+(defn max-min
+  [values]
+  (->> values
+       (reduce (fn [[vmax vmin] v]
+                 [(max vmax v) (min vmin v)])
+               [0 Long/MAX_VALUE])))
 
 (defn day14-part2
   {:test (fn []
@@ -78,9 +83,8 @@
                  pair-map
                  (range rounds))
          (count-map)
-         (reduce (fn [[vmax vmin] [_ v]]
-                   [(max vmax v) (min vmin v)])
-                 [0 Long/MAX_VALUE])
+         (vals)
+         (max-min)
          (apply -))))
 
 (comment
