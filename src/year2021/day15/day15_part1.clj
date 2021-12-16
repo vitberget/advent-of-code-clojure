@@ -50,9 +50,9 @@
                         [[2 2] [1 2]]
                         [[2 2] [2 3]]
                         [[2 2] [2 1]]))))}
-  [paths riskmap]
+  [paths risk-map]
   (->> paths
-       (mapcat #(path->paths % riskmap))))
+       (mapcat #(path->paths % risk-map))))
 
 (defn score-path
   {:test (fn []
@@ -64,6 +64,15 @@
        (map #(get risk-map %))
        (reduce + 0)))
 
+(defn score-path-with-shortest
+  {:test (fn []
+           (let [risk-map (text->risk-map day15-example)]
+             (is= (score-path [[0 0] [0 1]] risk-map) 1)))}
+  [path risk-map shortest-map]
+  (let [[p n](take-last 2 path)]
+    (+ (get shortest-map p)
+       (get risk-map n))))
+
 (defn do-a-round
   [shortest-map paths risk-map]
   (loop [shortest-map shortest-map
@@ -72,7 +81,7 @@
     (if (nil? new-path)
       [shortest-map paths]
 
-      (let [path-score (score-path new-path risk-map)
+      (let [path-score (score-path-with-shortest new-path risk-map shortest-map)
             test-pos (last new-path)
             test-val (get shortest-map test-pos)]
         (if (or (nil? test-val)
@@ -86,6 +95,27 @@
             new-paths
             paths))))))
 
+(defn do-risk-map
+  [risk-map max-pos]
+  (loop [counter 0
+         shortest-map {[0 0] 0}
+         paths (list [[0 0]])]
+    (when (and (not= 0 counter) (= 0 (mod counter 25)))
+      (println "counter" counter (count paths))
+      )
+    (cond (> counter (+ 500 500 500))
+          "counter"
+
+          (empty? paths)
+          (get shortest-map max-pos)
+
+          :else
+          (let [[shortest-map paths] (do-a-round shortest-map paths risk-map)]
+            (recur
+              (inc counter)
+              shortest-map
+              paths)))))
+
 (defn day15-part1
   {:test (fn []
            (is= (day15-part1 day15-example) 40))}
@@ -95,21 +125,7 @@
                           [(max mx x) (max my y)])
                         [0 0]
                         risk-map)]
-    (loop [counter 0
-           shortest-map {[0 0] 0}
-           paths (list [[0 0]])]
-      (cond (> counter 500)
-            "counter"
-
-            (empty? paths)
-            (get shortest-map max-pos)
-
-            :else
-            (let [[shortest-map paths] (do-a-round shortest-map paths risk-map)]
-              (recur
-                (inc counter)
-                shortest-map
-                paths))))))
+    (do-risk-map risk-map max-pos)))
 
 (comment
   (time (day15-part1 day15-puzzle))
