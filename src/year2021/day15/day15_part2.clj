@@ -62,7 +62,7 @@
 
 (comment
   (time (day15-part2 day15-puzzle))
-  ;"Elapsed time: 194454.974239 msecs"
+  ;"Elapsed time: 43379.166463 msecs"
   ;=> 2887
   (time (day15-part2 day15-example))
   )

@@ -27,15 +27,14 @@
            (let [risk-map (text->risk-map day15-example)]
              (is= (path->paths [[0 0]] risk-map)
                   (list [[0 0] [1 0]]
-                        [[0 0] [0 1]]))
-             ))}
+                        [[0 0] [0 1]]))))}
   [path risk-map]
-  (let [[x y] (last path)]
+  (let [[x y :as lpos] (last path)]
     (->> (list [-1 0] [1 0] [0 -1] [0 1])
          (map (fn [[dx dy]]
                 [(- x dx) (- y dy)]))
          (filter #(contains? risk-map %1))
-         (map #(conj path %1)))))
+         (map (fn[pos] [lpos pos])))))
 
 (defn paths->paths
   {:test (fn []
@@ -52,7 +51,8 @@
                         [[2 2] [2 1]]))))}
   [paths risk-map]
   (->> paths
-       (mapcat #(path->paths % risk-map))))
+       (pmap #(path->paths % risk-map))
+       (apply concat)))
 
 (defn score-path
   {:test (fn []
@@ -65,11 +65,8 @@
        (reduce + 0)))
 
 (defn score-path-with-shortest
-  {:test (fn []
-           (let [risk-map (text->risk-map day15-example)]
-             (is= (score-path [[0 0] [0 1]] risk-map) 1)))}
   [path risk-map shortest-map]
-  (let [[p n](take-last 2 path)]
+  (let [[p n] (take-last 2 path)]
     (+ (get shortest-map p)
        (get risk-map n))))
 
@@ -129,6 +126,6 @@
 
 (comment
   (time (day15-part1 day15-puzzle))
-  ;"Elapsed time: 4925.663232 msecs"
+  ;"Elapsed time: 415.067808 msecs"
   ;=> 527
   )
