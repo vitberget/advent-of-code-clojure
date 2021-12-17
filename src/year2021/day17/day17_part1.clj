@@ -15,7 +15,7 @@
                  :y-max -5}))}
   [text]
   (let [numbers (->> text
-                     (re-matches #"target area: x=([0-9\-]+)..([0-9\-]+), y=([0-9\-]+)..([0-9\-]+)")
+                     (re-matches #"target area: x=([0-9\-]+)\.\.([0-9\-]+), y=([0-9\-]+)\.\.([0-9\-]+)")
                      (drop 1)
                      (map read-string))
         x-numbers (take 2 numbers)
