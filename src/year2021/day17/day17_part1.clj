@@ -17,16 +17,17 @@
   (let [numbers (->> text
                      (re-matches #"target area: x=([0-9\-]+)..([0-9\-]+), y=([0-9\-]+)..([0-9\-]+)")
                      (drop 1)
-                     (map read-string))]
-    {:x-min (apply min (take 2 numbers))
-     :x-max (apply max (take 2 numbers))
-     :y-min (apply min (drop 2 numbers))
-     :y-max (apply max (drop 2 numbers))}))
+                     (map read-string))
+        x-numbers (take 2 numbers)
+        y-numbers (drop 2 numbers)]
+    {:x-min (apply min x-numbers)
+     :x-max (apply max x-numbers)
+     :y-min (apply min y-numbers)
+     :y-max (apply max y-numbers)}))
 
 (defn inside-range?
   [n n-min n-max]
-  (and (>= n n-min)
-       (<= n n-max)))
+  (<= n-min n n-max))
 
 (defn y-speed-ok?
   [y-speed y-min y-max]
@@ -62,7 +63,6 @@
   (let [target (text->target text)
         y-speed (find-y-speed target)]
     (find-max-y y-speed)))
-
 
 (comment
   (time (day17-part1 day17-puzzle))

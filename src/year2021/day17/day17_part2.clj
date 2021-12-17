@@ -13,18 +13,20 @@
              (is (hits-target? [23 -10] test-target))
              (is (hits-target? [8 0] test-target))
              (is-not (hits-target? [5 10] test-target))
-             (is-not (hits-target? [23 0] test-target))
-             ))}
+             (is-not (hits-target? [23 0] test-target))))}
   [[x-speed y-speed] {y-min :y-min y-max :y-max x-min :x-min x-max :x-max}]
   (loop [x 0
          y 0
          x-speed x-speed
-         y-speed y-speed
-         ]
+         y-speed y-speed]
     (cond
       (and (part1/inside-range? x x-min x-max)
            (part1/inside-range? y y-min y-max))
       true
+
+      (and (= x-speed 0)
+           (< x x-min))
+      false
 
       (or (> x x-max)
           (< y y-min))
@@ -43,7 +45,6 @@
   [text]
   (let [{x-max :x-max y-min :y-min y-max :y-max :as target} (part1/text->target text)
         y-meh (max (math/abs y-min) (math/abs y-max))]
-    (pprint target)
     (->> (for [x (range (* x-max 2))
                y (range (- y-meh) y-meh)
                :when (hits-target? [x y] target)]
