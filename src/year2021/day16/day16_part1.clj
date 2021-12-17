@@ -1,10 +1,7 @@
 (ns year2021.day16.day16-part1
   (:require [ysera.test :refer [is is= is-not deftest]]
             [year2021.day16.day16-data :refer [day16-example day16-puzzle]]
-            [year2021.day16.day16-bits :refer [text->bits bits->number]]
-            [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]
-            [clojure.math.numeric-tower :as math]))
+            [year2021.day16.day16-bits :refer [text->bits bits->number]]))
 
 (defn bits->type
   [bits]
@@ -79,8 +76,7 @@
                  {:version 1
                   :type    :literal-value
                   :value   3
-                  :size    11}]
-                )
+                  :size    11}])
            (is= (bits->packet (text->bits "EE00D40C823060"))
                 [{:version 7
                   :type    :operator
