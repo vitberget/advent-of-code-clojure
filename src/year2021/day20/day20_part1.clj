@@ -71,6 +71,7 @@
 (def enhance-point
   (memoize
     (fn [[px py :as point] image algorithm level]
+      ;(println point level)
       (if (= level 1)
         (against-original-image point image algorithm)
         (let [level (dec level)
