@@ -1,6 +1,5 @@
 (ns year2021.day21.day21-part1
-  (:require [ysera.test :refer [is is= is-not deftest]]
-            [year2021.day21.day21-data :refer [day21-example day21-puzzle]]))
+  (:require [ysera.test :refer [is is= is-not deftest]]))
 
 (defn update-pos
   [pos dice-score]
