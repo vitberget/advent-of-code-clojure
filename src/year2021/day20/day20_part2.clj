@@ -27,7 +27,9 @@
     (count (enhance-image algorithm image level))))
 
 (comment
-  (is= (time (day20-part2 day20-example 50)) 3351)
+  (time (day20-part2 day20-example 50))
+  ;"Elapsed time: 108142.452604 msecs"
+  ;=> 3351
   (time (day20-part2 day20-puzzle 2))
   (time (day20-part2 day20-puzzle 50))
   ;"Elapsed time: 326839.089511 msecs"
