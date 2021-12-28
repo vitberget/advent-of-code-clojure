@@ -2,8 +2,7 @@
   (:require [ysera.test :refer [is is= is-not deftest]]
             [year2021.day19.day19-data :refer [day19-example day19-puzzle]]
             [year2021.day19.day19-rotations :refer [rotations rotate-scanner]]
-            [clojure.string :as str]
-            [clojure.set :as set]))
+            [clojure.string :as str]))
 
 (defn text->scanner
   [text]
