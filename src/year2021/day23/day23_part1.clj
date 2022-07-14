@@ -1,20 +1,48 @@
 (ns year2021.day23.day23-part1
   (:require [ysera.test :refer [is is= is-not deftest]]
             [year2021.day23.day23-data :refer [day23-example day23-puzzle]]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.set :as set]))
 
-(def target-x {:A 3
-               :B 5
-               :C 7
-               :D 9})
+(def target-x {:A 2
+               :B 4
+               :C 6
+               :D 8})
+
+(def valid-post-line-0
+  (set/difference (->> (range 11)
+                       (into #{}))
+                  (->> target-x
+                       (vals)
+                       (into #{}))))
+
+(defn complete?
+  {:test (fn []
+           (is-not (complete? {:A      #{[2 2] [8 2]}
+                               :B      #{[2 1] [6 1]}
+                               :C      #{[4 1] [6 2]}
+                               :D      #{[4 2] [8 1]}
+                               :energy 0}))
+           (is (complete? {:A      #{[2 2] [2 1]}
+                           :B      #{[4 1] [4 2]}
+                           :C      #{[6 1] [6 2]}
+                           :D      #{[8 2] [8 1]}
+                           :energy 0})))}
+  [state]
+  (->> (dissoc state :energy)
+       (map (fn [[c posses]]
+              (let [tx (get target-x c)]
+                (and (contains? posses [tx 1])
+                     (contains? posses [tx 2])))))
+       (reduce (fn [a b] (and a b)))))
 
 (defn text->state
   {:test (fn []
            (is= (text->state day23-example)
-                {:A      #{[3 2] [9 2]}
-                 :B      #{[3 1] [7 1]}
-                 :C      #{[5 1] [7 2]}
-                 :D      #{[5 2] [9 1]}
+                {:A      #{[2 2] [8 2]}
+                 :B      #{[2 1] [6 1]}
+                 :C      #{[4 1] [6 2]}
+                 :D      #{[4 2] [8 1]}
                  :energy 0}))}
   [text]
   (-> (->> text
@@ -27,7 +55,7 @@
            (map-indexed (fn [y line] (let [y (inc y)]
                                        (->> line
                                             (map-indexed (fn [x c]
-                                                           (let [x (-> x (* 2) (+ 3))]
+                                                           (let [x (-> x (* 2) (+ 2))]
                                                              [(keyword (str c)) x y])))))))
            (apply concat)
            (reduce (fn [acc [c x y]]
