@@ -9,6 +9,11 @@
                :C 6
                :D 8})
 
+(def cost-to-move {:A 1
+                   :B 10
+                   :C 100
+                   :D 1000})
+
 (def valid-post-line-0-x
   (set/difference (->> (range 11)
                        (into #{}))
@@ -34,7 +39,7 @@
   [state]
   (->> state
        (map (fn [[c posses]]
-              (let [tx (get target-x c)]
+              (let [tx (target-x c)]
                 (and (contains? posses [tx 1])
                      (contains? posses [tx 2])))))
        (reduce (fn [a b] (and a b)))))
@@ -118,22 +123,18 @@
                 #{})
            )}
   [type [x y] state]
-  (let [tx (get target-x type)
+  (let [tx (target-x type)
         all-vals (as-> state $
                        (vals $)
                        (apply set/union $))
         line-0-vals (->> all-vals
                          (filter (fn [[_ y]] (= y 0)))
                          (into #{}))
-        type-vals (get state type)
+        type-vals (state type)
         not-type-vals (as-> state $
                             (dissoc $ type)
                             (vals $)
                             (apply set/union $))]
-    (println {:all-vals      all-vals
-              :type-vals     type-vals
-              :not-type-vals not-type-vals
-              :line-0-vals   line-0-vals})
     (cond
       (and (= x tx)
            (= y 2))
@@ -171,6 +172,30 @@
 
       :else
       #{})))
+
+(defn manhattan-distance
+  {:test (fn []
+           (is= (manhattan-distance [0 0] [0 1]) 1)
+           (is= (manhattan-distance [0 1] [0 0]) 1)
+           (is= (manhattan-distance [0 1] [1 0]) 2)
+           (is= (manhattan-distance [0 2] [1 0]) 3)
+           (is= (manhattan-distance [0 2] [2 0]) 4)
+           (is= (manhattan-distance [0 0] [2 2]) 4)
+           )}
+  [[x1 y1] [x2 y2]]
+  (+ (abs (- x1 x2))
+     (abs (- y1 y2))))
+
+(defn energy-consumed
+  {:test (fn[]
+           (is= (energy-consumed :A [0 0] [2 2]) 4)
+           (is= (energy-consumed :B [0 0] [2 2]) 40)
+           (is= (energy-consumed :C [0 0] [2 2]) 400)
+           (is= (energy-consumed :D [0 0] [2 2]) 4000)
+           )}
+  [type p1 p2]
+  (* (manhattan-distance p1 p2)
+     (cost-to-move type)))
 
 (defn day23-part1
   {:test (fn []
