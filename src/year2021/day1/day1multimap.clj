@@ -10,8 +10,8 @@
            (is= (day1-delta-solution 1 day1-puzzle) 1387)
            (is= (day1-delta-solution 3 day1-puzzle) 1362))}
   [delta text]
-  (let [numbers (text->numbers text)
-        numbers2 (drop delta numbers)]
-    (->> (map < numbers numbers2)
+  (let [nums-1 (text->numbers text)
+        nums-2 (drop delta nums-1)]
+    (->> (map < nums-1 nums-2)
          (filter identity)
          (count))))
