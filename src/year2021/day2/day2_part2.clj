@@ -8,8 +8,8 @@
     "down" (update state :aim + number)
     "up" (update state :aim - number)
     "forward" (-> state
-                  (update :f + number)
-                  (update :d + (* (:aim state) number)))))
+                  (update :forward + number)
+                  (update :depth + (* (:aim state) number)))))
 
 (defn day2-part2
   {:test (fn []
@@ -17,8 +17,8 @@
   [text]
   (as-> text $
         (text->actions $)
-        (reduce update-state {:f 0 :d 0 :aim 0} $)
-        (select-keys $ [:d :f])
+        (reduce update-state {:forward 0 :depth 0 :aim 0} $)
+        (select-keys $ [:depth :forward])
         (vals $)
         (reduce * $)))
 

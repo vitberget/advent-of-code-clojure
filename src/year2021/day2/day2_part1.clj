@@ -5,18 +5,17 @@
 
 (defn text->actions
   [text]
-  (->>
-    text
-    (str/split-lines)
-    (map (fn [line] (str/split line #" ")))
-    (map (fn [[word number]] [word (read-string number)]))))
+  (->> text
+       (str/split-lines)
+       (map (fn [line] (str/split line #" ")))
+       (map (fn [[word number]] [word (read-string number)]))))
 
 (defn update-state
   [state [word number]]
   (condp = word
-    "down" (update state :d + number)
-    "up" (update state :d - number)
-    "forward" (update state :f + number)))
+    "down" (update state :depth + number)
+    "up" (update state :depth - number)
+    "forward" (update state :forward + number)))
 
 (defn day2-part1
   {:test (fn []
@@ -24,7 +23,7 @@
   [text]
   (->> text
        (text->actions)
-       (reduce update-state {:f 0 :d 0})
+       (reduce update-state {:forward 0 :depth 0})
        (vals)
        (reduce *)))
 
