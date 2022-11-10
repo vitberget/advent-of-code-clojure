@@ -1,14 +1,14 @@
 (ns year2021.day2.day2-part2
-  (:require [ysera.test :refer [is is= is-not deftest]]
-            [year2021.day2.data-day2 :refer [day2-example day2-puzzle]]
-            [year2021.day2.day2-part1 :refer [text->actions]]))
+  (:require [year2021.day2.data-day2 :refer [day2-example day2-puzzle]]
+            [year2021.day2.day2-part1 :refer [text->actions]]
+            [ysera.test :refer [is=]]))
 
 (defn update-state [state [word number]]
   (condp = word
     "down" (update state :aim + number)
     "up" (update state :aim - number)
     "forward" (-> state
-                  (update :forward + number)
+                  (update :horizontal + number)
                   (update :depth + (* (:aim state) number)))))
 
 (defn day2-part2
@@ -17,8 +17,8 @@
   [text]
   (as-> text $
         (text->actions $)
-        (reduce update-state {:forward 0 :depth 0 :aim 0} $)
-        (select-keys $ [:depth :forward])
+        (reduce update-state {:horizontal 0 :depth 0 :aim 0} $)
+        (select-keys $ [:depth :horizontal])
         (vals $)
         (reduce * $)))
 

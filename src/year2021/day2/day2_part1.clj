@@ -1,7 +1,7 @@
 (ns year2021.day2.day2-part1
-  (:require [ysera.test :refer [is is= is-not deftest]]
+  (:require [clojure.string :as str]
             [year2021.day2.data-day2 :refer [day2-example day2-puzzle]]
-            [clojure.string :as str]))
+            [ysera.test :refer [is=]]))
 
 (defn text->actions
   [text]
@@ -15,7 +15,7 @@
   (condp = word
     "down" (update state :depth + number)
     "up" (update state :depth - number)
-    "forward" (update state :forward + number)))
+    "forward" (update state :horizontal + number)))
 
 (defn day2-part1
   {:test (fn []
@@ -23,7 +23,7 @@
   [text]
   (->> text
        (text->actions)
-       (reduce update-state {:forward 0 :depth 0})
+       (reduce update-state {:horizontal 0 :depth 0})
        (vals)
        (reduce *)))
 
