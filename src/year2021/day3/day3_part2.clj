@@ -39,6 +39,7 @@
 
 (defn calc-oxygen [lines] (calc-stuff lines \0 \1))
 (defn calc-co2-scrubber [lines] (calc-stuff lines \1 \0))
+(defn parse-binary-string [bs] (Integer/parseInt bs 2))
 
 (defn day3-part2
   {:test (fn []
@@ -48,10 +49,10 @@
   (let [lines (->> text (str/split-lines))
         oxygen (-> lines
                    (calc-oxygen)
-                   (Integer/parseInt 2))
+                   (parse-binary-string))
         co2-scrubber (-> lines
                          (calc-co2-scrubber)
-                         (Integer/parseInt 2))]
+                         (parse-binary-string))]
     (* oxygen co2-scrubber)))
 
 (comment
