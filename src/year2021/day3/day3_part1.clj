@@ -5,17 +5,17 @@
             [clojure.math.numeric-tower :as math]))
 
 
+(defn inc-if-match
+  [n char1 char2]
+  (if (= char1 char2)
+    (inc (or n 0))
+    (or n 0)))
+
 (defn count-gamma-and-epsilon-inner
   [state index char]
   (-> state
-      (update-in [index \1] (fn [n]
-                              (if (= char \1)
-                                (inc (or n 0))
-                                (or n 0))))
-      (update-in [index \0] (fn [n]
-                              (if (= char \0)
-                                (inc (or n 0))
-                                (or n 0))))))
+      (update-in [index \1] #(inc-if-match % char \1))
+      (update-in [index \0] #(inc-if-match % char \0))))
 
 (defn count-gamma-and-epsilon
   {:test (fn []
@@ -36,6 +36,11 @@
         line
         (count-gamma-and-epsilon-inner state index char)))))
 
+(defn bits->number [number [bit-index bit-values] comparator]
+  (if (comparator (get bit-values \1) (get bit-values \0))
+    (+ number (math/expt 2 bit-index))
+    number))
+
 (defn calculate-gamma-and-epsilon
   {:test (fn []
            (is= (calculate-gamma-and-epsilon {4 {\1 7, \0 5}
@@ -44,23 +49,10 @@
                                               1 {\1 7, \0 5}
                                               0 {\1 5, \0 7}})
                 {:gamma   22
-                 :epsilon 9})
-           )}
+                 :epsilon 9}))}
   [gamma-epsilon-state]
-  {:gamma   (reduce (fn [a [k v]]
-                      (if (> (get v \1) (get v \0))
-                        (+ a (math/expt 2 k))
-                        a))
-                    0
-                    gamma-epsilon-state
-                    )
-   :epsilon (reduce (fn [a [k v]]
-                      (if (< (get v \1) (get v \0))
-                        (+ a (math/expt 2 k))
-                        a))
-                    0
-                    gamma-epsilon-state
-                    )})
+  {:gamma   (reduce #(bits->number %1 %2 >) 0 gamma-epsilon-state)
+   :epsilon (reduce #(bits->number %1 %2 <) 0 gamma-epsilon-state)})
 
 (defn day3-part1
   {:test (fn []
@@ -72,7 +64,6 @@
        (calculate-gamma-and-epsilon)
        (vals)
        (reduce *)))
-
 
 (comment
   (time (day3-part1 day3-puzzle))
