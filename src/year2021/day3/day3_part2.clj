@@ -24,22 +24,16 @@
   (let [{ones \1 zeroes \0} (count-ones-zeroes lines index)]
     (> zeroes ones)))
 
-(defn nth-char-is
-  [line lines index char-1 char-2]
-  (= (nth line index)
-     (if (more-zeros? lines index)
-       char-1
-       char-2)))
-
 (defn calc-stuff
   [lines char-1 char-2]
   (loop [index 0
          lines lines]
     (if (= (count lines) 1)
       (first lines)
-      (recur (inc index)
-             (->> lines
-                  (filter (fn [line] (nth-char-is line lines index char-1 char-2))))))))
+      (let [test-char (if (more-zeros? lines index) char-1 char-2)]
+        (recur (inc index)
+               (->> lines
+                    (filter (fn [line] (= (nth line index) test-char)))))))))
 
 (defn calc-oxygen [lines] (calc-stuff lines \0 \1))
 (defn calc-co2-scrubber [lines] (calc-stuff lines \1 \0))
