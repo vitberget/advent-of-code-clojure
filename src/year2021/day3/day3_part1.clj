@@ -23,8 +23,15 @@
                                                        3 {\1 0, \0 1}
                                                        2 {\1 1, \0 0}
                                                        1 {\1 0, \0 1}
-                                                       0 {\1 0, \0 1}}))}
-
+                                                       0 {\1 0, \0 1}})
+           (is= (-> nil
+                    (count-gamma-and-epsilon "00100")
+                    (count-gamma-and-epsilon "11100"))
+                {4 {\1 1, \0 1}
+                 3 {\1 1, \0 1}
+                 2 {\1 2, \0 0}
+                 1 {\1 0, \0 2}
+                 0 {\1 0, \0 2}}))}
   [state line]
   (loop [index 0
          [char & line] (str/reverse line)
@@ -36,8 +43,8 @@
         line
         (count-gamma-and-epsilon-inner state index char)))))
 
-(defn bits->number [number [bit-index bit-values] comparator]
-  (if (comparator (get bit-values \1) (get bit-values \0))
+(defn bits->number [number [bit-index bit-values] comp-fn]
+  (if (comp-fn (get bit-values \1) (get bit-values \0))
     (+ number (math/expt 2 bit-index))
     number))
 
