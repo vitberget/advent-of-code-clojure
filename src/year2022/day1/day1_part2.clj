@@ -16,7 +16,6 @@
         (take 3 $)
         (sum-numbers $)))
 
-
 (comment
   (time (day1-part2 day1-puzzle))
   ;"Elapsed time: 4.765943 msecs"

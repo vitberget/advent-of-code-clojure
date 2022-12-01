@@ -3,7 +3,6 @@
             [year2022.day1.day1-data :refer [day1-example day1-puzzle]]
             [clojure.string :as str]))
 
-
 (defn text->numbers
   [text]
   (->> text
