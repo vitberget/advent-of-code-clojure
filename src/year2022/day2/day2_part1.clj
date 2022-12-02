@@ -1,9 +1,9 @@
 (ns year2022.day2.day2-part1
-  (:require [ysera.test :refer [is is= is-not deftest]]
+  (:require [clojure.string :as str]
             [year2022.day2.day2-data :refer [day2-example day2-puzzle]]
-            [clojure.string :as str]))
+            [ysera.test :refer [is=]]))
 
-(defn char->spr
+(defn char->rps
   [string]
   (condp = string
     "A" :rock
@@ -16,11 +16,10 @@
 
 (defn line->rps
   {:test (fn []
-           (is= (line->rps "A X") [:rock :rock])
-           )}
+           (is= (line->rps "A X") [:rock :rock]))}
   [line]
   (->> (str/split line #" ")
-       (map char->spr)))
+       (map char->rps)))
 
 (def shape-score
   {:rock     1
@@ -32,23 +31,22 @@
    :even 3
    :win  6})
 
+(defn win?
+  [opponent you]
+  (or
+    (and (= you :rock)
+         (= opponent :scissors))
+    (and (= you :paper)
+         (= opponent :rock))
+    (and (= you :scissors)
+         (= opponent :paper))))
+
 (defn game-status
   [opponent you]
   (cond
-    (= opponent you)
-    :even
-
-    (and (= :rock you) (= :scissors opponent))
-    :win
-
-    (and (= :paper you) (= :rock opponent))
-    :win
-
-    (and (= :scissors you) (= :paper opponent))
-    :win
-
-    :else
-    :loss))
+    (= opponent you) :even
+    (win? opponent you) :win
+    :else :loss))
 
 (defn score
   {:test (fn []
@@ -59,19 +57,16 @@
   (+ (shape-score you)
      (game-score (game-status opponent you))))
 
-
-
-
 (defn day2-part1
   {:test (fn []
-           (is= (day2-part1 day2-example) 15))}
+           (is= (day2-part1 day2-example) 15)
+           (is= (day2-part1 day2-puzzle) 11475))}
   [text]
   (->> text
        (str/split-lines)
        (map line->rps)
-       (map (fn [p] (apply score p)))
+       (map #(apply score %1))
        (reduce +)))
-
 
 (comment
   (time (day2-part1 day2-puzzle))
