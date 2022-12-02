@@ -2,17 +2,15 @@
   (:require [clojure.string :as str]
             [year2022.day2.day2-data :refer [day2-example day2-puzzle]]
             [year2022.day2.day2-part1 :as part1]
-            [ysera.test :refer [is=]]))
-
-(def select-loss
-  {:rock     :scissors
-   :paper    :rock
-   :scissors :paper})
+            [ysera.test :refer [is=]]
+            [clojure.set :as set]))
 
 (def select-win
   {:rock     :paper
    :paper    :scissors
    :scissors :rock})
+
+(def select-loss (set/map-invert select-win))
 
 (defn select-you
   [[opponent desire]]
