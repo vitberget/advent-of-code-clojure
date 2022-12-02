@@ -13,15 +13,20 @@
   [numbers]
   (apply + numbers))
 
+(defn text->paragraphs
+  [text]
+  (str/split text #"\n\n"))
+
 (defn day1-part1
   {:test (fn []
-           (is= (day1-part1 day1-example) 24000))}
+           (is= (day1-part1 day1-example) 24000)
+           (is= (day1-part1 day1-puzzle) 73211))}
   [text]
-  (as-> text $
-        (str/split $ #"\n\n")
-        (map text->numbers $)
-        (map sum-numbers $)
-        (apply max $)))
+  (->> text
+       (text->paragraphs)
+       (map text->numbers)
+       (map sum-numbers)
+       (apply max)))
 
 (comment
   (time (day1-part1 day1-puzzle))
