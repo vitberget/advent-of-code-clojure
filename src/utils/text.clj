@@ -1,5 +1,6 @@
 (ns utils.text
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [ysera.test :refer [is is= is-not deftest]]))
 
 (defn text->paragraphs
   [text]
@@ -18,3 +19,13 @@
 (defn line->words
   [line]
   (str/split line #" "))
+
+(defn line->halves
+  {:test (fn []
+           (is= (line->halves "abc123") ["abc" "123"])
+           )}
+  [line]
+  (let [len (-> line
+                (count)
+                (/ 2))]
+    [(subs line 0 len) (subs line len)]))
