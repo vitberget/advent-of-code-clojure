@@ -12,16 +12,16 @@
         (str/split $ #"[,-]")
         (map read-string $)))
 
-(defn a-in-b?
-  [a-l a-h b-l b-h]
-  (and (>= a-l b-l)
-       (<= a-h b-h)))
+(defn a-inside-b?
+  [a-low a-high b-low b-high]
+  (and (>= a-low b-low)
+       (<= a-high b-high)))
 
 (defn range-overlap-completely?
-  [[r1-l r1-h r2-l r2-h]]
+  [[r1-low r1-high r2-low r2-high]]
   (or
-    (a-in-b? r1-l r1-h r2-l r2-h)
-    (a-in-b? r2-l r2-h r1-l r1-h)))
+    (a-inside-b? r1-low r1-high r2-low r2-high)
+    (a-inside-b? r2-low r2-high r1-low r1-high)))
 
 (defn day4-part1
   {:test (fn []
