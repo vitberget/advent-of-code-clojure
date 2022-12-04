@@ -17,7 +17,7 @@
   (and (>= a-l b-l)
        (<= a-h b-h)))
 
-(defn range-overlap?
+(defn range-overlap-completely?
   [[r1-l r1-h r2-l r2-h]]
   (or
     (a-in-b? r1-l r1-h r2-l r2-h)
@@ -31,7 +31,7 @@
   (->> text
        (ut/text->lines)
        (map line->ranges)
-       (filter range-overlap?)
+       (filter range-overlap-completely?)
        (count)))
 
 (comment
