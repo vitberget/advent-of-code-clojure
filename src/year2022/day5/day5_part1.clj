@@ -1,9 +1,9 @@
 (ns year2022.day5.day5-part1
   (:require
+    [clojure.string :as str]
     [utils.text :as ut]
-    [ysera.test :refer [is is= is-not deftest]]
     [year2022.day5.day5-data :refer [day5-example day5-puzzle]]
-    [clojure.string :as str]))
+    [ysera.test :refer [is=]]))
 
 (defn text->stacks
   {:test (fn []
