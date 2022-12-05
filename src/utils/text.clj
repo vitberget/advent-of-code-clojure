@@ -29,3 +29,21 @@
                 (count)
                 (/ 2))]
     [(subs line 0 len) (subs line len)]))
+
+(defn split-on
+  [regex text]
+  (str/split text regex))
+
+(defn has-content
+  {:test (fn []
+           (is-not (has-content nil))
+           (is-not (has-content ""))
+           (is-not (has-content "  "))
+           (is (has-content "abc"))
+           (is (has-content " abc  ")))}
+  [string]
+  (when string
+    (->> string
+         (.trim)
+         (.isEmpty)
+         (not))))
