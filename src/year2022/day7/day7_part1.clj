@@ -87,24 +87,12 @@
                 v)))
        (reduce +)))
 
-(defn new-cwd
-  [cwd path]
-  (cond
-    (empty? cwd)
-    path
-
-    (= cwd "/")
-    (str cwd path)
-
-    :else
-    (str cwd "/" path)))
-
 (defn dir-structure->dir-sized-internal
   [dir-map dir-structure cwd]
   (reduce-kv
     (fn [dir-map key val]
       (if (map? val)
-        (let [cwd (new-cwd cwd key)]
+        (let [cwd (conj cwd key)]
           (-> dir-map
               (dir-structure->dir-sized-internal val cwd)
               (assoc cwd (size-of-dir val))))
@@ -118,15 +106,15 @@
                                                 "f"     29116
                                                 "g"     2557
                                                 "h.lst" 62596}})
-                {"a/e" 584
-                 "a"   94853})
+                {["a" "e"] 584
+                 ["a"]   94853})
            (is= (dir-structure->dir-sized (text->dir-structure day7-example))
-                {"/a/e" 584
-                 "/a"   94853
-                 "/d"   24933642
-                 "/"    48381165}))}
+                {["/" "a" "e"] 584
+                 ["/" "a"]   94853
+                 ["/" "d"]   24933642
+                 ["/"]    48381165}))}
   [dir-structure]
-  (dir-structure->dir-sized-internal {} dir-structure ""))
+  (dir-structure->dir-sized-internal {} dir-structure []))
 
 (defn day7-part1
   {:test (fn []
