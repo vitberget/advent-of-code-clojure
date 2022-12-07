@@ -33,13 +33,13 @@ cat > "day${day}/day${day}_part1.clj" << EOF
 (comment
   (time (day${day}-part1 day${day}-puzzle))
   ;
-  ;
   )
 EOF
 
 cat > "day${day}/day${day}_part2.clj" << EOF
 (ns year${year}.day${day}.day${day}-part2
   (:require [ysera.test :refer [is is= is-not deftest]]
+            [year${year}.day${day}.day${day}-part1 :as part-1]
             [year${year}.day${day}.day${day}-data :refer [day${day}-example day${day}-puzzle]]
             [clojure.string :as str]))
 
@@ -52,7 +52,6 @@ cat > "day${day}/day${day}_part2.clj" << EOF
 
 (comment
   (time (day${day}-part2 day${day}-puzzle))
-  ;
   ;
   )
 EOF
