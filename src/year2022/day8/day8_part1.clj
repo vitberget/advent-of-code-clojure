@@ -1,8 +1,7 @@
 (ns year2022.day8.day8-part1
-  (:require
-    [utils.text :as ut]
-    [year2022.day8.day8-data :refer [day8-example day8-puzzle]]
-    [ysera.test :refer [is is-not is=]]))
+  (:require [utils.text :as ut]
+            [year2022.day8.day8-data :refer [day8-example day8-puzzle]]
+            [ysera.test :refer [is is-not is=]]))
 
 (defn line->forest
   [[y line]]
@@ -19,16 +18,12 @@
        (map line->forest)
        (apply merge)))
 
-(def directions
-  (list [-1 0]
-        [1 0]
-        [0 -1]
-        [0 1]))
+(def directions (list [-1 0] [1 0] [0 -1] [0 1]))
 
 (defn translate-position
-  [[x y] distance [dx dy]]
-  [(+ x (* distance dx))
-   (+ y (* distance dy))])
+  [position distance direction]
+  (->> (mapv #(* distance %) direction)
+       (mapv + position)))
 
 (defn visible?
   {:test (fn []
@@ -48,8 +43,7 @@
           (or (->> translated
                    (map #(nth % 2))
                    (filter nil?)
-                   (empty?)
-                   (not))
+                   (not-empty))
               (recur (inc distance)
                      (->> translated
                           (filter #(< (nth % 2) height))

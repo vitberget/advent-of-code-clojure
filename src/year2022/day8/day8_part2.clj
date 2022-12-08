@@ -8,18 +8,16 @@
   (let [origin-height (get forest origin)]
     (loop [position origin
            view 0]
-      (let [position [(+ (first position) (first direction))
-                      (+ (second position) (second direction))]
+      (let [position (mapv + position direction)
             test-height (get forest position)]
-        (cond
-          (nil? test-height)
-          view
+        (cond (nil? test-height)
+              view
 
-          (>= test-height origin-height)
-          (inc view)
+              (>= test-height origin-height)
+              (inc view)
 
-          :else
-          (recur position (inc view)))))))
+              :else
+              (recur position (inc view)))))))
 
 (defn scenic-score
   {:test (fn []
