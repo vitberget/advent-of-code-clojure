@@ -21,9 +21,7 @@
   (str/split line #" "))
 
 (defn line->halves
-  {:test (fn []
-           (is= (line->halves "abc123") ["abc" "123"])
-           )}
+  {:test (fn [] (is= (line->halves "abc123") ["abc" "123"]))}
   [line]
   (let [len (-> line
                 (count)
@@ -47,3 +45,7 @@
          (.trim)
          (.isEmpty)
          (not))))
+
+(defn char->number
+  [char]
+  (- (int char) (int \0)))
