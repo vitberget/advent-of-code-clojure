@@ -1,5 +1,6 @@
 (ns year2022.day9.day9-part1
-  (:require [utils.text :as ut]
+  (:require [utils.numbers :as un]
+            [utils.text :as ut]
             [year2022.day9.day9-data :refer [day9-example day9-puzzle]]
             [ysera.test :refer [is is-not is=]]))
 
@@ -43,22 +44,8 @@
   (if (tail-touching-head? head tail)
     tail
     (let [[dx dy] (map - head tail)]
-      (cond
-        (zero? dx)
-        [tx (+ ty (if (pos? dy) 1 -1))]
-
-        (zero? dy)
-        [(+ tx (if (pos? dx) 1 -1)) ty]
-
-        (and (= 2 (abs dx))
-             (= 2 (abs dx)))
-        [(+ tx (if (pos? dx) 1 -1)) (+ ty (if (pos? dy) 1 -1))]
-
-        (= 2 (abs dx))
-        [(+ tx (if (pos? dx) 1 -1)) (+ ty dy)]
-
-        (= 2 (abs dy))
-        [(+ tx dx) (+ ty (if (pos? dy) 1 -1))]))))
+      [(+ tx (un/limit dx -1 1))
+       (+ ty (un/limit dy -1 1))])))
 
 (def directions
   {:R [0 1]
