@@ -37,7 +37,8 @@
            (is= (tail-follow-head [0 0] [2 0]) [1 0])
            (is= (tail-follow-head [0 0] [-2 0]) [-1 0])
            (is= (tail-follow-head [1 2] [0 0]) [1 1])
-           (is= (tail-follow-head [2 1] [0 0]) [1 1]))}
+           (is= (tail-follow-head [2 1] [0 0]) [1 1])
+           (is= (tail-follow-head [-6 8] [-4 6]) [-5 7]))}
   [head [tx ty :as tail]]
   (if (tail-touching-head? head tail)
     tail
@@ -48,6 +49,10 @@
 
         (zero? dy)
         [(+ tx (if (pos? dx) 1 -1)) ty]
+
+        (and (= 2 (abs dx))
+             (= 2 (abs dx)))
+        [(+ tx (if (pos? dx) 1 -1)) (+ ty (if (pos? dy) 1 -1))]
 
         (= 2 (abs dx))
         [(+ tx (if (pos? dx) 1 -1)) (+ ty dy)]
