@@ -1,17 +1,42 @@
 (ns year2022.day10.day10-part2
-  (:require [ysera.test :refer [is is= is-not deftest]]
-            [year2022.day10.day10-data :refer [day10-example day10-puzzle]]
-            [clojure.string :as str]))
+  (:require [year2022.day10.day10-data :refer [day10-example day10-puzzle]]
+            [year2022.day10.day10-part1 :as part-1]
+            [ysera.test :refer [is=]]))
+
+(defn in-range?
+  [[cursor x]]
+  (-> cursor
+      (- x)
+      (abs)
+      (< 2)))
 
 (defn day10-part2
   {:test (fn []
-           (is= (day10-part2 day10-example) 0))}
+           (is= (day10-part2 day10-example)
+                ["##..##..##..##..##..##..##..##..##..##.."
+                 "###...###...###...###...###...###...###."
+                 "####....####....####....####....####...."
+                 "#####.....#####.....#####.....#####....."
+                 "######......######......######......####"
+                 "#######.......#######.......#######....."]))}
   [text]
-  )
-
+  (->> text
+       (part-1/text->commands)
+       (part-1/commands->cycle-scores)
+       (map-indexed (fn [i v] [(mod i 40) v]))
+       (map in-range?)
+       (map #(if % "#" "."))
+       (partition 40)
+       (map #(apply str %))))
 
 (comment
   (time (day10-part2 day10-puzzle))
-  ;
-  ;
+  ;"Elapsed time: 0.781817 msecs"
+  ;=>
+  ;("####...##..##..####.###...##..#....#..#."
+  ; "#.......#.#..#.#....#..#.#..#.#....#..#."
+  ; "###.....#.#....###..#..#.#....#....####."
+  ; "#.......#.#....#....###..#.##.#....#..#."
+  ; "#....#..#.#..#.#....#....#..#.#....#..#."
+  ; "####..##...##..#....#.....###.####.#..#.")
   )

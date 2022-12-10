@@ -51,9 +51,7 @@
   (-> text
       (text->commands)
       (commands->cycle-scores)
-      (get-score (list 20 60 100 140 180 220))
-      ))
-
+      (get-score (list 20 60 100 140 180 220))))
 
 (comment
   (time (day10-part1 day10-puzzle))
