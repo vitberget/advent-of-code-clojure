@@ -71,7 +71,6 @@
        (map paragraph->state)
        (apply merge)))
 
-
 (defn apply-operation
   [number [v1 v2 v3]]
   (let [v2 (condp = v2
@@ -83,41 +82,24 @@
             (if (= v3 "old") number v3))
         (quot 3))))
 
-
 (defn monkey-do
   [state monkey-id]
-  (println)
-  (println "monkey-do" monkey-id)
-  (println ">" (get state "0"))
-  (println ">" (get state "1"))
-  (println ">" (get state "2"))
-  (println ">" (get state "3"))
   (let [{operation :operation
          test      :test
          if-true   :if-true
          if-false  :if-false} (get state monkey-id)
-        _ (println "if true" if-true "if false" if-false)
         action-list-1 (->> (get-in state [monkey-id :items])
                            (map #(apply-operation % operation))
                            (map (fn [number] [number (mod number test)])))
         action-list (->> action-list-1
                          (map (fn [[number ihms]] [number (if (zero? ihms) if-true if-false)])))
-        _ (println "a1" action-list-1)
-        _ (println "al" action-list)
         state (->> action-list
                    (reduce (fn [state [number receiver]]
                              (update-in state [receiver :items] conj number))
-                           state)
-                   )
-        state (-> state
-                  (assoc-in [monkey-id :items] (list))
-                  (update-in [monkey-id :inspected] + (count action-list)))]
-    (println "<" (get state "0"))
-    (println "<" (get state "1"))
-    (println "<" (get state "2"))
-    (println "<" (get state "3"))
-    state
-    ))
+                           state))]
+    (-> state
+        (assoc-in [monkey-id :items] (list))
+        (update-in [monkey-id :inspected] + (count action-list)))))
 
 (defn monkees-do
   [state]
@@ -136,17 +118,20 @@
 
 (defn day11-part1
   {:test (fn []
-           (is= (day11-part1 day11-example) 10605))}
+           (is= (day11-part1 day11-example) 10605)
+           (is= (day11-part1 day11-puzzle) 58056))}
   [text]
   (->> text
        (text->state)
-       (monkees-do-throw-stuff 1)
+       (monkees-do-throw-stuff 20)
        (vals)
-       (map :items)
-       ))
+       (map :inspected)
+       (sort >)
+       (take 2)
+       (apply *)))
 
 (comment
   (time (day11-part1 day11-puzzle))
-  ;
-  ;
+  ;"Elapsed time: 5.686162 msecs"
+  ;=> 58056
   )
