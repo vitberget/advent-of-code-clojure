@@ -88,10 +88,9 @@
          test      :test
          if-true   :if-true
          if-false  :if-false} (get state monkey-id)
-        action-list-1 (->> (get-in state [monkey-id :items])
-                           (map #(apply-operation % operation))
-                           (map (fn [number] [number (mod number test)])))
-        action-list (->> action-list-1
+        action-list (->> (get-in state [monkey-id :items])
+                         (map #(apply-operation % operation))
+                         (map (fn [number] [number (mod number test)]))
                          (map (fn [[number ihms]] [number (if (zero? ihms) if-true if-false)])))
         state (->> action-list
                    (reduce (fn [state [number receiver]]
