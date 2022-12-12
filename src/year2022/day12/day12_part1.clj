@@ -5,13 +5,12 @@
 
 (defn day12-part1
   {:test (fn []
-           (is= (day12-part1 day12-example) 0))}
+           (is= (day12-part1 day12-example) 31))}
   [text]
   )
 
 
 (comment
   (time (day12-part1 day12-puzzle))
-  ;
   ;
   )
