@@ -11,7 +11,7 @@
            (is-not (ok-step? \m nil))
            (is (ok-step? \m \a)))}
   [from to]
-  (when to
+  (when (and to from)
     (let [from (if (= from \S) \a from)
           to (if (= to \E) \z to)
           from (int from)
@@ -56,7 +56,7 @@
          visited #{start-pos}]
     (let [routes (->> routes
                       (mapcat #(extend-route the-map visited %))
-                      (reduce (fn [{vis :vis routes :routes :as state} route]
+                      (reduce (fn [{vis :vis :as state} route]
                                 (let [last-pos (last route)]
                                   (if (contains? vis last-pos)
                                     state
