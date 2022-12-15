@@ -16,3 +16,12 @@
     higher-limit
 
     :else val))
+
+(defn manhattan-distance
+  {:test (fn []
+           (is= (manhattan-distance [1 0] [0 0]) 1)
+           (is= (manhattan-distance [10 0] [0 10]) 20))}
+  [pos-1 pos-2]
+  (->> (mapv - pos-1 pos-2)
+       (map abs)
+       (reduce +)))
