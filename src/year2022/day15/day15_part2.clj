@@ -31,12 +31,10 @@
 (defn move-below-of-once
   {:test (fn []
            (let [sensors (text->sensors day15-example)]
-             (is=
-               ;x=14, y=11
-               (reduce move-below-of-once
-                       [14 11]
-                       sensors)
-               [14 11])))}
+             (is= (reduce move-below-of-once
+                          [14 11]
+                          sensors)
+                  [14 11])))}
   [[x y :as pos] {[sx sy] :sensor beacon-manhattan :manhattan :as wtf}]
   (if (pos-inside-beacon? pos wtf)
     [x (+ sy 1 (- beacon-manhattan (abs (- sx x))))]        ; (+ sx 1 (- beacon-manhattan (abs (- sy y))))
@@ -82,5 +80,5 @@
   ;"Elapsed time: 1058203.749184 msecs"
   ;=> 11318723411840
   ;
-  ;x 2829680
+  ; [2829680 3411840]
   )
