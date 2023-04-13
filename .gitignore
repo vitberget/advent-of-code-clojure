@@ -2,3 +2,5 @@
 /.idea
 /.nrepl-port
 /.cpcache
+.clj-kondo/
+.lsp/
