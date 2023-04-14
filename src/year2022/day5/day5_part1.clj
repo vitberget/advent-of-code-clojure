@@ -85,21 +85,6 @@
               (update from #(drop 1 %)))
           (dec size))))))
 
-(defn text->state
-  {:test (fn []
-           (is= (text->state day5-example)
-                {:stacks [(list \N \Z)
-                          (list \D \C \M)
-                          (list \P)]
-                 :moves  [[1 2 1]
-                          [3 1 3]
-                          [2 2 1]
-                          [1 1 2]]}))}
-  [text]
-  (let [[stack-text moves-text] (ut/text->paragraphs text)]
-    {:stacks (text->stacks stack-text)
-     :moves  (text->moves moves-text)}))
-
 (defn day5-part1
   {:test (fn []
            (is= (day5-part1 day5-example) "CMZ")
