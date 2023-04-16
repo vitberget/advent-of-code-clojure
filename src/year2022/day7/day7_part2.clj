@@ -17,11 +17,8 @@
                       (dissoc ["/"])
                       (vals))]
     (->> dir-sizes
-         (map #(fn [v] [v (- total-size v)]))
-         (filter (fn [[_ v]] (<= v max-size)))
-         (sort (fn [[_ v1] [_ v2]] (> v1 v2)))
-         (first)
-         (first))))
+         (filter (fn [v] (<= (- total-size v) max-size)))
+         (apply min))))
 
 (comment
   (time (day7-part2 day7-puzzle))
