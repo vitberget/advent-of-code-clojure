@@ -1,8 +1,8 @@
 (ns year2022.day1.day1-part2
-  (:require [ysera.test :refer [is is= is-not deftest]]
-            [year2022.day1.day1-part1 :as part-1]
+  (:require [utils.text :as ut]
             [year2022.day1.day1-data :refer [day1-example day1-puzzle]]
-            [clojure.string :as str]))
+            [year2022.day1.day1-part1 :as part-1]
+            [ysera.test :refer [is=]]))
 
 (defn day1-part2
   {:test (fn []
@@ -10,8 +10,8 @@
            (is= (day1-part2 day1-puzzle) 213958))}
   [text]
   (->> text
-       (part-1/text->paragraphs)
-       (map part-1/text->numbers)
+       (ut/text->paragraphs)
+       (map ut/text->numbers)
        (map part-1/sum-numbers)
        (sort >)
        (take 3)
