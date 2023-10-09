@@ -1,11 +1,11 @@
 #!/bin/sh
 
-year=2022
+year=2023
 
 mkdir "year$year" 2>/dev/null || true
 cd "year$year"
 
-for day in {1..25}; do
+for day in $(seq -f "%02g" 1 25); do
   echo $day
   mkdir "day$day" 2>/dev/null
 
