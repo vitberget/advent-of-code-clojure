@@ -49,3 +49,7 @@
 (defn char->number
   [char]
   (- (int char) (int \0)))
+
+(defn digit? [c] 
+  (and (>= 0 (compare \0 c)) 
+       (>= 0 (compare c \9))))
