@@ -6,6 +6,15 @@
 ;a1b2c3d4e5f
 ;treb7uchet
 
+(def day01-example-2 
+"two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen")
+
 (def day01-puzzle "2911threeninesdvxvheightwobm
 3three16xsxhpnqmzmnine8one
 seven5khtwo891hlb
