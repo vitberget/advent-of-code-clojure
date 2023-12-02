@@ -27,7 +27,8 @@
 
 (defn day02-part2
   {:test (fn []
-           (is= (day02-part2 day02-example) 2286))} 
+           (is= (day02-part2 day02-example) 2286)
+           (is= (day02-part2 day02-puzzle) 71036))} 
   [text]
   (->> text
        (text->lines)

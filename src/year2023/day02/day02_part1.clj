@@ -12,7 +12,7 @@
        (split-on #",")
        (map str/trim) 
        (map (fn[part] (split-on #" " part)))
-       (map (fn [[count color]] {(keyword color) (read-string count)}))
+       (map (fn [[amount color]] {(keyword color) (read-string amount)}))
        (apply merge)))
 
 (defn line->game 
@@ -37,10 +37,9 @@
            (is (possible-pick? {:red 5}))
            (is-not (possible-pick? {:red 15})))}
   [game]
-  (and 
-    (<= (get game :red 0) 12)
-    (<= (get game :green 0) 13)
-    (<= (get game :blue 0) 14)))
+  (and (<= (get game :red 0) 12)
+       (<= (get game :green 0) 13)
+       (<= (get game :blue 0) 14)))
 
 (defn possible-picks? [games]
   {:test (fn[]
@@ -54,14 +53,16 @@
       (nil? game)
       true
 
-      (not (possible-pick? game))
-      false
-      
+      (possible-pick? game)
+      (recur games)
+
       :else
-      (recur games))))
+      false)))
 
 (defn day02-part1
-  {:test (fn [] (is= (day02-part1 day02-example) 8))}
+  {:test (fn [] 
+           (is= (day02-part1 day02-example) 8)
+           (is= (day02-part1 day02-puzzle) 2204))}
   [text]
   (->> text
        (text->lines)
@@ -69,7 +70,6 @@
        (filter (fn [game] (possible-picks? (:picks game))))
        (map :id)
        (apply +)))
-
 
 (comment
   (time (day02-part1 day02-puzzle))
