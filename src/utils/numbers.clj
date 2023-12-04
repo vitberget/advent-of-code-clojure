@@ -25,3 +25,12 @@
   (->> (mapv - pos-1 pos-2)
        (map abs)
        (reduce +)))
+
+(defn inc-nil-is-zero
+  {:test (fn []
+           (is= (inc-nil-is-zero nil) 1)
+           (is= (inc-nil-is-zero 0) 1)
+           (is= (inc-nil-is-zero 1) 2)
+           (is= (inc-nil-is-zero 11) 12))}
+  [val]
+  (inc (or val 0)))
