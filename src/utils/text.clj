@@ -53,3 +53,12 @@
 (defn digit? [c] 
   (and (>= 0 (compare \0 c)) 
        (>= 0 (compare c \9))))
+
+(defn line->numbers
+  {:test (fn[] 
+           (is= (line->numbers "1 2 3") [1 2 3])
+           (is= (line->numbers "1   2   3") [1 2 3]))}
+  [line]
+  (->> line
+       (split-on #" +")
+       (map read-string)))
