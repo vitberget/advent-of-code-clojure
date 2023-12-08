@@ -62,3 +62,12 @@
   (->> line
        (split-on #" +")
        (map read-string)))
+
+(defn reverse-str
+  {:test (fn[]
+           (is= (reverse-str "ABC") "CBA"))}
+  [text]
+  (->> text
+      (reverse)
+      (apply str))
+  )

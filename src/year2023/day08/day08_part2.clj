@@ -4,6 +4,8 @@
             [year2023.day08.day08-data :refer [day08-example day08-puzzle]]
             [clojure.string :as str]))
 
+; Solved it in Rust instead...
+
 (defn day08-part2
   {:test (fn []
            (is= (day08-part2 day08-example) 0))}
