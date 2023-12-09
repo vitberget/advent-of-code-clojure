@@ -34,3 +34,15 @@
            (is= (inc-nil-is-zero 11) 12))}
   [val]
   (inc (or val 0)))
+
+(defn all-zeroes?
+  {:test (fn [] 
+           (is (all-zeroes? [0 0 0 0]))
+           (is-not (all-zeroes? [0 1 2 3]))
+           (is-not (all-zeroes? [3 0 0 0])))}
+  [numbers]
+  (loop [[number & numbers] numbers]
+    (cond
+      (nil? number) true
+      (not (zero? number)) false
+      :else (recur numbers))))
