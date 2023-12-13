@@ -24,7 +24,7 @@
         char-count (-> lines (first) (count))]
     (loop [pos 1]
       (cond (= pos char-count) 0 
-            (reduce #(and %1 (mirrors? %2 pos)) lines) pos
+            (reduce #(and %1 (mirrors? %2 pos)) true lines) pos
             :else (recur (inc pos))))))
 
 (defn pattern->score 
