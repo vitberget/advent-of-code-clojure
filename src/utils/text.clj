@@ -1,6 +1,6 @@
 (ns utils.text
   (:require [clojure.string :as str]
-            [ysera.test :refer [is is= is-not deftest]]))
+            [ysera.test :refer [is is= is-not]]))
 
 (defn text->paragraphs
   [text]
@@ -10,6 +10,16 @@
   [text]
   (str/split-lines text))
 
+(defn text->rows
+  {:test (fn []
+           (is= (text->rows "123") ["1" "2" "3"])
+           (is= (text->rows "123\nABC") ["1A" "2B" "3C"])
+           (is= (text->rows "123\nABC\n456") ["1A4" "2B5" "3C6"]))}
+  [text]
+  (let [lines (text->lines text)]
+    (->> (partition (count lines) (apply interleave lines))
+         (map (fn [chrs] (apply str chrs))))))
+
 (defn text->numbers
   [text]
   (->> text
@@ -18,7 +28,7 @@
 
 (defn line->words
   [line]
-  (str/split line #" "))
+  (str/split line #" +"))
 
 (defn line->halves
   {:test (fn [] (is= (line->halves "abc123") ["abc" "123"]))}
@@ -68,6 +78,5 @@
            (is= (reverse-str "ABC") "CBA"))}
   [text]
   (->> text
-      (reverse)
-      (apply str))
-  )
+       (reverse)
+       (apply str)))

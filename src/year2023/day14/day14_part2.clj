@@ -6,7 +6,7 @@
 
 (defn day14-part2
   {:test (fn []
-           (is= (day14-part2 day14-example) 0))}
+           (is= (day14-part2 day14-example) 64))}
   [text]
   )
 
