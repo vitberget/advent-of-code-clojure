@@ -2,8 +2,7 @@
   (:require
     [utils.text :refer [split-on text->lines]]
     [year2023.day18.day18-data :refer [day18-example day18-puzzle]]
-    [ysera.test :refer [is=]]
-    [clojure.set :as set]))
+    [ysera.test :refer [is=]]))
 
 (defn dig-one 
   [[x y] [direction amount]]
@@ -34,61 +33,55 @@
        (map (fn [[direction amount]] [direction (read-string amount)]))))
 
 (defn fill-perimiter-y [perimiter y min-x max-x]
-  (loop [x min-x
-         previous-was-wall false
-         previous-was-wall-had-north false
-         previous-was-wall-had-south false
-         walls 0
-         fillers #{}]
-    (if (= x max-x)
-      fillers
-      (let [is-wall (contains? perimiter [x y])
-            is-wall-north (contains? perimiter [x (dec y)])
-            is-wall-south (contains? perimiter [x (inc y)])
-            new-x (inc x)]
-        (cond
-          (and is-wall 
-               previous-was-wall
-               (or (and previous-was-wall-had-south is-wall-south)
-                   (and previous-was-wall-had-north is-wall-north)))
-          (recur new-x 
-                 false 
-                 false
-                 false
-                 (inc walls) 
-                 fillers)
+    (loop [x min-x
+           previous-was-wall false
+           previous-was-wall-had-north false
+           previous-was-wall-had-south false
+           walls 0
+           filler-count 0]
+      (if (= x max-x)
+        filler-count
+        (let [is-wall (contains? perimiter [x y])
+              is-wall-north (contains? perimiter [x (dec y)])
+              is-wall-south (contains? perimiter [x (inc y)])
+              new-x (inc x)]
+          (cond
+            (and is-wall 
+                 previous-was-wall
+                 (or (and previous-was-wall-had-south is-wall-south)
+                     (and previous-was-wall-had-north is-wall-north)))
+            (recur new-x 
+                   false 
+                   false
+                   false
+                   (inc walls) 
+                   filler-count)
 
-          (and is-wall previous-was-wall)
-          (recur new-x 
-                 true 
-                 previous-was-wall-had-north
-                 previous-was-wall-had-south
-                 walls 
-                 fillers)
+            (and is-wall previous-was-wall)
+            (recur new-x 
+                   true 
+                   previous-was-wall-had-north
+                   previous-was-wall-had-south
+                   walls 
+                   filler-count)
 
-          is-wall
-          (recur new-x 
-                 true
-                 is-wall-north
-                 is-wall-south
-                 (inc walls) 
-                 fillers)
+            is-wall
+            (recur new-x 
+                   true
+                   is-wall-north
+                   is-wall-south
+                   (inc walls) 
+                   filler-count)
 
-          (odd? walls)
-          (recur new-x 
-                 false 
-                 false
-                 false
-                 walls 
-                 (conj fillers [x y]))
-
-          :else 
-          (recur new-x 
-                 false 
-                 false
-                 false
-                 walls 
-                 fillers))))))
+            :else
+            (recur new-x 
+                   false 
+                   false
+                   false
+                   walls 
+                   (if (odd? walls)
+                     (inc filler-count)
+                     filler-count)))))))
 
 (defn fill-perimiter 
   [tunnels]
@@ -96,9 +89,9 @@
         max-x (->> tunnels (map first) (reduce max))
         min-y (->> tunnels (map second) (reduce min))
         max-y (->> tunnels (map second) (reduce max))]
-    (->> (for [y (range min-y max-y)]
-           (fill-perimiter-y tunnels y min-x max-x))
-         (apply set/union))))
+    (->> (range min-y max-y)
+         (pmap (fn [y] (fill-perimiter-y tunnels y min-x max-x)))
+         (reduce +))))
 
 (defn print-dig 
   [perimiter filler]
@@ -126,10 +119,10 @@
         filler (fill-perimiter perimiter)]
     ; (print-dig perimiter filler)
     (+ (count perimiter)
-       (count filler))))
+       filler)))
 
 (comment
   (time (day18-part1 day18-puzzle))
-; (out) "Elapsed time: 48.543835 msecs"
-; 42317
+  ; (out) "Elapsed time: 48.543835 msecs"
+  ; 42317
   )
