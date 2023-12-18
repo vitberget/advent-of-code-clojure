@@ -60,9 +60,22 @@
   [char]
   (- (int char) (int \0)))
 
+
 (defn digit? [c] 
   (and (>= 0 (compare \0 c)) 
        (>= 0 (compare c \9))))
+
+(defn lowercase-char->hex-number
+  {:test (fn []
+           (is= (lowercase-char->hex-number \0) 0)
+           (is= (lowercase-char->hex-number \3) 3)
+           (is= (lowercase-char->hex-number \9) 9)
+           (is= (lowercase-char->hex-number \a) 10)
+           (is= (lowercase-char->hex-number \f) 15))}
+  [ch]
+  (if (digit? ch)
+    (char->number ch) 
+    (+ 10 (- (int ch) (int \a)))))
 
 (defn line->numbers
   {:test (fn[] 
