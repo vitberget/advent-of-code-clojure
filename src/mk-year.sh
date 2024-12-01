@@ -1,6 +1,6 @@
 #!/bin/sh
 
-year=2023
+year=2024
 
 mkdir "year$year" 2>/dev/null || true
 cd "year$year"
