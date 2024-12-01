@@ -5,12 +5,25 @@
 
 (defn day01-part1
   {:test (fn []
-           (is= (day01-part1 day01-example) 0))}
+           (is= (day01-part1 day01-example) 11))}
   [text]
-  )
-
+  (let [{left :left right :right}
+        (as-> text $
+          (str/split-lines $)
+          (map (fn [line] (->> (str/split line #"\s+") (map read-string))) $)
+          (reduce (fn[acc [left right]]
+                    (-> acc
+                        (update :left conj left)
+                        (update :right conj right))) 
+                  {:left [] :right []}
+                  $)
+          (update $ :right sort)
+          (update $ :left sort))]
+    (->> (map - left right)
+         (map abs)
+         (reduce +))))
 
 (comment
-  (time (day01-part1 day01-puzzle))
-  ;
+  (time (day01-part1 day01-puzzle)) 
+  ; 2815556
   )
