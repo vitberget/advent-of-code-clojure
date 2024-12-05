@@ -64,7 +64,7 @@
     (->> updates
          (filter (fn[numbers] (right-order? numbers ordering-rules)))
          (map get-middle)
-         (reduce +) )))
+         (reduce +))))
 
 (comment
   (time (day05-part1 day05-puzzle))
