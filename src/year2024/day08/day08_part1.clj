@@ -28,7 +28,7 @@
   (let [dx (- a2-x a1-x)
         dy (- a2-y a1-y)]
     #{[(- a1-x dx) (- a1-y dy)]
-      [(+ a2-x dx) (+ a2-y dy)]} ))
+      [(+ a2-x dx) (+ a2-y dy)]}))
 
 (defn antennas->antinodes-partly [antenna antennas antinodes]
   (loop [[other-antenna & antennas] antennas
