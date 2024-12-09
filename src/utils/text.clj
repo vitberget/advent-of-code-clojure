@@ -86,6 +86,14 @@
        (split-on #" +")
        (map read-string)))
 
+(defn line->digits
+  {:test (fn[] 
+           (is= (line->digits "123") [1 2 3])
+           (is= (line->digits "1299") [1 2 9 9]))}
+  [line]
+  (->> line
+       (map char->number)))
+
 (defn reverse-str
   {:test (fn[]
            (is= (reverse-str "ABC") "CBA"))}
