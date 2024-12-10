@@ -5,6 +5,8 @@
    [ysera.test :refer [is=]]))
 
 (defn text->the-map
+  "Takes the text and produces a map with the digit as key with the positions containing it as a set.
+   Example: {0 #{[0 0] [13 45]}} "
   [text]
   (->> text
        (ut/text->lines)
@@ -21,7 +23,8 @@
 
 (defn find-up-steps 
   {:test (fn[]
-           (is= (find-up-steps 1 #{[0 0]} (text->the-map  "0123\n1234\n8765\n9876")) #{[0 1] [1 0]}))}
+           (is= (find-up-steps 1 #{[0 0]} (text->the-map  "0123\n1234\n8765\n9876")) #{[0 1] [1 0]})
+           (is= (find-up-steps 2 #{[1 0][0 1]} (text->the-map  "0123\n1234\n8765\n9876")) #{[1 1] [2 0]}))}
   [current-step trails the-map]
   (let [current-step-positions (get the-map current-step)]
     (->> trails
