@@ -19,7 +19,7 @@
                                the-map))) 
                {})))
 
-(defn- find-up-steps 
+(defn find-up-steps 
   {:test (fn[]
            (is= (find-up-steps 1 #{[0 0]} (text->the-map  "0123\n1234\n8765\n9876")) #{[0 1] [1 0]}))}
   [current-step trails the-map]
@@ -41,7 +41,6 @@
       (empty? trails) 0
       :else (recur (inc current-step)
                    (find-up-steps current-step trails the-map)))))
-
 
 (defn day10-part1
   {:test (fn []
