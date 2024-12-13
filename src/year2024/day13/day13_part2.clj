@@ -1,17 +1,22 @@
 (ns year2024.day13.day13-part2
-  (:require [ysera.test :refer [is is= is-not deftest]]
-            [year2024.day13.day13-part1 :as part-1]
-            [year2024.day13.day13-data :refer [day13-example day13-puzzle]]
-            [clojure.string :as str]))
+  (:require [year2024.day13.day13-part1 :as part-1]
+            [year2024.day13.day13-data :refer [day13-puzzle]]))
 
 (defn day13-part2
-  {:test (fn []
-           (is= (day13-part2 day13-example) 0))}
+  ; No good test provided
   [text]
-  )
-
+  (->> text
+       (part-1/text->arcade)
+       (map (fn [machine] (-> machine
+                              (update-in [:prize 0] + 10000000000000)
+                              (update-in [:prize 1] + 10000000000000))))
+       (map part-1/machine->cheapest-win)
+       (filter identity)
+       (map (fn [[a b]] (+ (* 3 a) b)))
+       (reduce +)))
 
 (comment
   (time (day13-part2 day13-puzzle))
-  ;
+  ; (out) "Elapsed time: 3.959654 msecs"
+  ; 106228669504887
   )
