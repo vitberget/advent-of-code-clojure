@@ -15,7 +15,7 @@
        (part-1/text->arcade)
        (map add-huge-numbers-to-prize)
        (map part-1/machine->cheapest-win)
-       (part-1/machines->score)))
+       (part-1/cheapest-scores->total-score)))
 
 (comment
   (time (day13-part2 day13-puzzle))

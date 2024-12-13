@@ -41,7 +41,7 @@
         (when (integer? n)
           [n m])))))
 
-(defn machines->score
+(defn cheapest-scores->total-score
   [machines]
   (->> machines 
        (filter identity)
@@ -54,7 +54,7 @@
   (->> text
        (text->arcade)
        (map machine->cheapest-win)
-       (machines->score)))
+       (cheapest-scores->total-score)))
 
 (comment
   (time (day13-part1 day13-puzzle))
