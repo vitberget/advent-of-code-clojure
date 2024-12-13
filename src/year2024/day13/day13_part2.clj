@@ -15,9 +15,7 @@
        (part-1/text->arcade)
        (map add-huge-numbers-to-prize)
        (map part-1/machine->cheapest-win)
-       (filter identity)
-       (map (fn [[a b]] (+ (* 3 a) b)))
-       (reduce +)))
+       (part-1/machines->score)))
 
 (comment
   (time (day13-part2 day13-puzzle))

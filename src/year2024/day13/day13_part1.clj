@@ -27,12 +27,11 @@
        (map paragraph->machine)))
 
 (defn machine->cheapest-win 
-  {:test (fn []
-           (let [machines (text->arcade day13-example)]
-             (is= (machine->cheapest-win (nth machines 0)) [80 40]) 
-             (is= (machine->cheapest-win (nth machines 1)) nil) 
-             (is= (machine->cheapest-win (nth machines 2)) [38 86]) 
-             (is= (machine->cheapest-win (nth machines 3)) nil)))}
+  {:test (fn [] (let [machines (text->arcade day13-example)]
+                  (is= (machine->cheapest-win (nth machines 0)) [80 40]) 
+                  (is= (machine->cheapest-win (nth machines 1)) nil) 
+                  (is= (machine->cheapest-win (nth machines 2)) [38 86]) 
+                  (is= (machine->cheapest-win (nth machines 3)) nil)))}
   [{[ax ay] :button-a [bx by] :button-b [px py] :prize}]
   (let [m (/ (- (* ax py) (* ay px))
              (- (* ax by) (* ay bx)))]
@@ -42,16 +41,20 @@
         (when (integer? n)
           [n m])))))
 
+(defn machines->score
+  [machines]
+  (->> machines 
+       (filter identity)
+       (map (fn [[a b]] (+ (* 3 a) b)))
+       (reduce +)))
+
 (defn day13-part1
-  {:test (fn []
-           (is= (day13-part1 day13-example) 480))}
+  {:test (fn [] (is= (day13-part1 day13-example) 480))}
   [text]
   (->> text
        (text->arcade)
        (map machine->cheapest-win)
-       (filter identity)
-       (map (fn [[a b]] (+ (* 3 a) b)))
-       (reduce +)))
+       (machines->score)))
 
 (comment
   (time (day13-part1 day13-puzzle))
