@@ -16,7 +16,7 @@
           the-map 
           instructions))
 
-(defn- the-map->score 
+(defn the-map->score 
   [{boxes :boxes}]
   (->> boxes
        (map (fn [[x y]] (+ x (* 100 y))))
