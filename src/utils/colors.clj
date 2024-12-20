@@ -3,6 +3,7 @@
 ;; Ansi shell 16 colors
 
 (def reset        "\033[0m")
+(def clear-screen "\033[H\033[J\033[3J]")
 
 (def black        "\033[0;30m")
 (def red          "\033[0;31m")
