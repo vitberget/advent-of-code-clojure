@@ -26,3 +26,10 @@
 
 (defn rgb [r g b]
   (str "\033[38;2;" r ";" g ";" b "m"))
+
+(defn goto [x y]
+  (str "\033[" y ";" x "H"))
+
+
+(comment 
+  )

@@ -37,7 +37,7 @@
   [text]
   (let [[the-map instructions] (text->data text)
         instructions (clean-instructions instructions)
-        final-map (get-final-map the-map instructions false) ]
+        final-map (get-final-map the-map instructions true) ]
     (the-map->score final-map)))
 
 (comment
