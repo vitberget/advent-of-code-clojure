@@ -1,6 +1,7 @@
 (ns utils.text
   (:require [clojure.string :as str]
-            [ysera.test :refer [is is= is-not]]))
+            [ysera.test :refer [is is= is-not]]
+            [clojure.string :as s]))
 
 (defn text->paragraphs
   [text]
@@ -101,3 +102,14 @@
   (->> text
        (reverse)
        (apply str)))
+
+(defn strip-leading
+  {:test (fn[]
+           (is= (strip-leading "001" "0") "1")
+           (is= (strip-leading "ab1" "0") "ab1")
+           )}
+  [text needle]
+  (loop [text text]
+   (if (s/starts-with? text needle)
+     (recur (subs text (count needle)))
+     text)))

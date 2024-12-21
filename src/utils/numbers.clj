@@ -6,11 +6,11 @@
            (is= (limit 3 0 2) 2)
            (is= (limit -30 -2 2) -2)
            (is= (limit 1 0 2) 1))}
-  [val lower-limit higher-limit]
+  [value lower-limit higher-limit]
   (cond
-    (< val lower-limit) lower-limit
-    (> val higher-limit) higher-limit
-    :else val))
+    (< value lower-limit) lower-limit
+    (> value higher-limit) higher-limit
+    :else value))
 
 (defn manhattan-distance
   {:test (fn []
