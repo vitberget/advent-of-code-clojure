@@ -52,16 +52,43 @@
 
 (defn to-binary-string 
   {:test (fn []
+           (is= (to-binary-string 2r0) "0")
            (is= (to-binary-string 2r1010) "1010")
            (is= (to-binary-string 2r1111010) "1111010"))}
   [n]
-  (Integer/toString n 2))
+  (loop [n n 
+         s ""]
+    (if (zero? n) 
+      (if (empty? s) "0" s)
+      (recur (quot n 2)
+             (str (bit-and n 1) s)))))
 
 (defn to-hex-string 
   {:test (fn []
+           (is= (to-hex-string 16rFFFFFFFFFFFF) "FFFFFFFFFFFF")
            (is= (to-hex-string 16r1010) "1010")
+           (is= (to-hex-string 16r1234567890ABCDEF) "1234567890ABCDEF")
            (is= (to-hex-string 16rABCD) "ABCD"))}
   [n]
-  (-> n 
-      (Integer/toString 16)
-      (str/upper-case)))
+  (loop [n n 
+         s ""]
+    (if (zero? n) 
+      (if (empty? s) "0" s)
+      (recur (quot n 16)
+             (str (condp = (bit-and n 15)
+                    0 "0"
+                    1 "1"
+                    2 "2"
+                    3 "3"
+                    4 "4"
+                    5 "5"
+                    6 "6"
+                    7 "7"
+                    8 "8"
+                    9 "9"
+                    10 "A"
+                    11 "B"
+                    12 "C"
+                    13 "D"
+                    14 "E"
+                    15 "F") s)))))
