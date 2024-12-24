@@ -1,5 +1,6 @@
 (ns utils.numbers
-  (:require [ysera.test :refer [is is= is-not deftest]]))
+  (:require [clojure.string :as str]
+            [ysera.test :refer [is is= is-not deftest]]))
 
 (defn limit
   {:test (fn []
@@ -48,3 +49,19 @@
   [lst]
   (->> lst
        (map-indexed (fn [idx item] [idx item]))))
+
+(defn to-binary-string 
+  {:test (fn []
+           (is= (to-binary-string 2r1010) "1010")
+           (is= (to-binary-string 2r1111010) "1111010"))}
+  [n]
+  (Integer/toString n 2))
+
+(defn to-hex-string 
+  {:test (fn []
+           (is= (to-hex-string 16r1010) "1010")
+           (is= (to-hex-string 16rABCD) "ABCD"))}
+  [n]
+  (-> n 
+      (Integer/toString 16)
+      (str/upper-case)))
